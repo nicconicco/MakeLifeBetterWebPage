@@ -167,7 +167,7 @@ async function loadEventos() {
                 <h3>${evento.nome}</h3>
                 <p><strong>Descrição:</strong> ${evento.descricao}</p>
                 <p><strong>Data:</strong> ${evento.data}</p>
-                <p><strong>Local:</strong> ${evento.local}</p>
+                <p><strong>Local:</strong> ${evento.city}</p>
                 <div class="item-meta">
                     Criado em: ${evento.createdAt?.toDate?.()?.toLocaleDateString() || 'N/A'}
                 </div>
