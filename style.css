@@ -1,0 +1,183 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Navegação por abas */
+.nav-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    color: #4CAF50;
+}
+
+.tab-btn.active {
+    color: #4CAF50;
+    border-bottom-color: #4CAF50;
+}
+
+/* Conteúdo das abas */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Formulários */
+.form-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Lista de itens */
+.items-list {
+    margin: 20px 0;
+}
+
+.item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border-left: 4px solid #4CAF50;
+}
+
+.item h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.item p {
+    color: #666;
+    margin: 3px 0;
+}
+
+.item .item-meta {
+    font-size: 12px;
+    color: #999;
+    margin-top: 10px;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    padding: 8px 15px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #da190b;
+}
+
+.edit-btn {
+    background-color: #2196F3;
+    padding: 8px 15px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.edit-btn:hover {
+    background-color: #1976D2;
+}
+
+/* Seção de logout */
+.logout-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.logout-btn {
+    background-color: #ff6b6b;
+}
+
+.logout-btn:hover {
+    background-color: #ff5252;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}

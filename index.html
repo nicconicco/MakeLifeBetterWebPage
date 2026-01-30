@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento - Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Gerenciamento</h1>
+        
+        <!-- Seção de Login -->
+        <div id="auth-section">
+            <h2>Login</h2>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Senha">
+            <button onclick="login()">Login</button>
+            <button onclick="register()">Registrar</button>
+        </div>
+
+        <!-- Seção Principal (aparece após login) -->
+        <div id="main-section" style="display: none;">
+            <!-- Navegação entre tabelas -->
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showTab('eventos')">Eventos</button>
+                <button class="tab-btn" onclick="showTab('event_location')">Locais</button>
+                <button class="tab-btn" onclick="showTab('duvidas')">Dúvidas</button>
+                <button class="tab-btn" onclick="showTab('lista_geral')">Lista Geral</button>
+                <button class="tab-btn" onclick="showTab('users')">Usuários</button>
+            </div>
+
+            <!-- Tab Eventos -->
+            <div id="eventos-tab" class="tab-content active">
+                <h2>Gerenciar Eventos</h2>
+                <div class="form-section">
+                    <input type="text" id="evento-nome" placeholder="Nome do Evento">
+                    <input type="text" id="evento-descricao" placeholder="Descrição">
+                    <input type="date" id="evento-data" placeholder="Data">
+                    <input type="text" id="evento-local" placeholder="Local">
+                    <button onclick="addEvento()">Adicionar Evento</button>
+                </div>
+                <div id="eventos-list" class="items-list"></div>
+            </div>
+
+            <!-- Tab Event Location -->
+            <div id="event_location-tab" class="tab-content">
+                <h2>Gerenciar Locais de Eventos</h2>
+                <div class="form-section">
+                    <input type="text" id="location-nome" placeholder="Nome do Local">
+                    <input type="text" id="location-endereco" placeholder="Endereço">
+                    <input type="number" id="location-capacidade" placeholder="Capacidade">
+                    <button onclick="addEventLocation()">Adicionar Local</button>
+                </div>
+                <div id="event_location-list" class="items-list"></div>
+            </div>
+
+            <!-- Tab Dúvidas -->
+            <div id="duvidas-tab" class="tab-content">
+                <h2>Gerenciar Dúvidas</h2>
+                <div class="form-section">
+                    <input type="text" id="duvida-titulo" placeholder="Título da Dúvida">
+                    <textarea id="duvida-pergunta" placeholder="Pergunta"></textarea>
+                    <textarea id="duvida-resposta" placeholder="Resposta"></textarea>
+                    <button onclick="addDuvida()">Adicionar Dúvida</button>
+                </div>
+                <div id="duvidas-list" class="items-list"></div>
+            </div>
+
+            <!-- Tab Lista Geral -->
+            <div id="lista_geral-tab" class="tab-content">
+                <h2>Lista Geral</h2>
+                <div class="form-section">
+                    <input type="text" id="lista-item" placeholder="Item">
+                    <input type="text" id="lista-categoria" placeholder="Categoria">
+                    <textarea id="lista-observacoes" placeholder="Observações"></textarea>
+                    <button onclick="addListaGeral()">Adicionar Item</button>
+                </div>
+                <div id="lista_geral-list" class="items-list"></div>
+            </div>
+
+            <!-- Tab Users -->
+            <div id="users-tab" class="tab-content">
+                <h2>Gerenciar Usuários</h2>
+                <div class="form-section">
+                    <input type="text" id="user-nome" placeholder="Nome">
+                    <input type="email" id="user-email" placeholder="Email">
+                    <input type="text" id="user-telefone" placeholder="Telefone">
+                    <select id="user-tipo">
+                        <option value="">Selecione o tipo</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">Usuário</option>
+                        <option value="moderator">Moderador</option>
+                    </select>
+                    <button onclick="addUser()">Adicionar Usuário</button>
+                </div>
+                <div id="users-list" class="items-list"></div>
+            </div>
+
+            <div class="logout-section">
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
