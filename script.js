@@ -147,10 +147,10 @@ window.addEvento = async function() {
 }
 
 function clearEventoForm() {
-    document.getElementById('evento-nome').value = '';
+    document.getElementById('evento-name').value = '';
     document.getElementById('evento-descricao').value = '';
     document.getElementById('evento-data').value = '';
-    document.getElementById('evento-local').value = '';
+    document.getElementById('evento-city').value = '';
 }
 
 async function loadEventos() {
@@ -164,7 +164,7 @@ async function loadEventos() {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'item';
             itemDiv.innerHTML = `
-                <h3>${evento.nome}</h3>
+                <h3>${evento.name}</h3>
                 <p><strong>Descrição:</strong> ${evento.descricao}</p>
                 <p><strong>Data:</strong> ${evento.data}</p>
                 <p><strong>Local:</strong> ${evento.city}</p>
