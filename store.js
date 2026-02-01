@@ -32,20 +32,24 @@ async function loadStoreProducts() {
     grid.innerHTML = '<p class="loading">Carregando produtos...</p>';
 
     try {
-        // Buscar apenas produtos ativos
-        const q = query(collection(db, 'produtos'), where('ativo', '==', true));
-        const querySnapshot = await getDocs(q);
+        // Buscar todos os produtos e filtrar no cliente (evita necessidade de índice)
+        const querySnapshot = await getDocs(collection(db, 'produtos'));
 
         allProducts = [];
         categorias = new Set();
 
         querySnapshot.forEach((docSnap) => {
             const produto = { id: docSnap.id, ...docSnap.data() };
-            allProducts.push(produto);
-            if (produto.categoria) {
-                categorias.add(produto.categoria);
+            // Filtrar apenas produtos ativos no cliente
+            if (produto.ativo !== false) {
+                allProducts.push(produto);
+                if (produto.categoria) {
+                    categorias.add(produto.categoria);
+                }
             }
         });
+
+        console.log('Produtos carregados:', allProducts.length);
 
         // Ordenar por mais recentes
         allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));

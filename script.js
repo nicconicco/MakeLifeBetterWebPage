@@ -1034,3 +1034,189 @@ window.deleteProduto = async function(produtoId) {
         alert('Erro ao excluir produto: ' + error.message);
     }
 }
+
+// ============================================
+// Funções de Exemplo e Limpeza
+// ============================================
+
+// Produtos de exemplo
+const produtosExemplo = [
+    {
+        nome: "Smartphone Galaxy Pro",
+        descricao: "Smartphone de última geração com câmera de 108MP, tela AMOLED de 6.7 polegadas e bateria de 5000mAh. Perfeito para quem busca performance e qualidade.",
+        preco: 2499.99,
+        precoPromocional: 1999.99,
+        imagem: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
+        categoria: "Eletrônicos",
+        estoque: 50,
+        ativo: true
+    },
+    {
+        nome: "Notebook UltraBook 15",
+        descricao: "Notebook ultrafino com processador Intel Core i7, 16GB RAM e SSD de 512GB. Ideal para trabalho e entretenimento.",
+        preco: 4999.99,
+        precoPromocional: null,
+        imagem: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
+        categoria: "Eletrônicos",
+        estoque: 25,
+        ativo: true
+    },
+    {
+        nome: "Fone de Ouvido Bluetooth Premium",
+        descricao: "Fone sem fio com cancelamento de ruído ativo, 30 horas de bateria e som Hi-Fi. Conforto para uso prolongado.",
+        preco: 599.99,
+        precoPromocional: 449.99,
+        imagem: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+        categoria: "Acessórios",
+        estoque: 100,
+        ativo: true
+    },
+    {
+        nome: "Camiseta Básica Algodão",
+        descricao: "Camiseta 100% algodão, confortável e durável. Disponível em várias cores. Perfeita para o dia a dia.",
+        preco: 79.99,
+        precoPromocional: null,
+        imagem: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+        categoria: "Roupas",
+        estoque: 200,
+        ativo: true
+    },
+    {
+        nome: "Tênis Esportivo Runner",
+        descricao: "Tênis para corrida com tecnologia de amortecimento, leve e respirável. Ideal para treinos intensos.",
+        preco: 399.99,
+        precoPromocional: 299.99,
+        imagem: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+        categoria: "Calçados",
+        estoque: 75,
+        ativo: true
+    },
+    {
+        nome: "Relógio Smartwatch Fit",
+        descricao: "Smartwatch com monitor cardíaco, GPS integrado e resistência à água. Acompanhe sua saúde em tempo real.",
+        preco: 899.99,
+        precoPromocional: 699.99,
+        imagem: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
+        categoria: "Acessórios",
+        estoque: 40,
+        ativo: true
+    },
+    {
+        nome: "Mochila Executiva",
+        descricao: "Mochila com compartimento para notebook 15.6\", porta USB externa e design moderno. Perfeita para o trabalho.",
+        preco: 249.99,
+        precoPromocional: null,
+        imagem: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+        categoria: "Acessórios",
+        estoque: 60,
+        ativo: true
+    },
+    {
+        nome: "Câmera DSLR Profissional",
+        descricao: "Câmera DSLR com sensor full-frame de 45MP, gravação 4K e sistema de foco avançado. Para fotógrafos exigentes.",
+        preco: 8999.99,
+        precoPromocional: 7499.99,
+        imagem: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400",
+        categoria: "Eletrônicos",
+        estoque: 10,
+        ativo: true
+    },
+    {
+        nome: "Cadeira Gamer RGB",
+        descricao: "Cadeira ergonômica com iluminação RGB, apoio lombar ajustável e reclinável até 180°. Conforto para longas sessões.",
+        preco: 1299.99,
+        precoPromocional: null,
+        imagem: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=400",
+        categoria: "Móveis",
+        estoque: 30,
+        ativo: true
+    },
+    {
+        nome: "Livro: Programação Web Moderna",
+        descricao: "Guia completo sobre desenvolvimento web com HTML5, CSS3, JavaScript e frameworks modernos. 500 páginas de conteúdo.",
+        preco: 89.99,
+        precoPromocional: 69.99,
+        imagem: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400",
+        categoria: "Livros",
+        estoque: 150,
+        ativo: true
+    },
+    {
+        nome: "Kit Skincare Completo",
+        descricao: "Kit com limpador facial, tônico, sérum e hidratante. Produtos naturais para todos os tipos de pele.",
+        preco: 199.99,
+        precoPromocional: 149.99,
+        imagem: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400",
+        categoria: "Beleza",
+        estoque: 80,
+        ativo: true
+    },
+    {
+        nome: "Cafeteira Expresso Automática",
+        descricao: "Cafeteira com moedor integrado, 15 bar de pressão e sistema de leite. Café de cafeteria em casa.",
+        preco: 1599.99,
+        precoPromocional: null,
+        imagem: "https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400",
+        categoria: "Eletrodomésticos",
+        estoque: 20,
+        ativo: true
+    }
+];
+
+// Popular com produtos de exemplo
+window.popularProdutosExemplo = async function() {
+    if (!confirm('Isso irá adicionar 12 produtos de exemplo. Deseja continuar?')) {
+        return;
+    }
+
+    const list = document.getElementById('produtos-list');
+    list.innerHTML = '<p class="loading">Adicionando produtos de exemplo...</p>';
+
+    try {
+        let count = 0;
+        for (const produto of produtosExemplo) {
+            await addDoc(collection(db, 'produtos'), {
+                ...produto,
+                createdAt: Date.now() - (count * 60000), // Diferentes timestamps
+                updatedAt: Date.now()
+            });
+            count++;
+        }
+
+        loadProdutos();
+        alert(`${count} produtos de exemplo adicionados com sucesso!`);
+    } catch (error) {
+        alert('Erro ao adicionar produtos: ' + error.message);
+        loadProdutos();
+    }
+}
+
+// Deletar todos os produtos
+window.deletarTodosProdutos = async function() {
+    if (!confirm('ATENÇÃO: Isso irá excluir TODOS os produtos! Esta ação não pode ser desfeita. Deseja continuar?')) {
+        return;
+    }
+
+    if (!confirm('Tem CERTEZA ABSOLUTA? Todos os produtos serão perdidos permanentemente!')) {
+        return;
+    }
+
+    const list = document.getElementById('produtos-list');
+    list.innerHTML = '<p class="loading">Excluindo todos os produtos...</p>';
+
+    try {
+        const querySnapshot = await getDocs(collection(db, 'produtos'));
+        let count = 0;
+
+        for (const docSnap of querySnapshot.docs) {
+            await deleteDoc(doc(db, 'produtos', docSnap.id));
+            count++;
+        }
+
+        loadProdutos();
+        alert(`${count} produtos excluídos com sucesso!`);
+    } catch (error) {
+        alert('Erro ao excluir produtos: ' + error.message);
+        loadProdutos();
+    }
+}
