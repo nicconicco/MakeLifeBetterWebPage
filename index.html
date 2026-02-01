@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gerenciamento - Firebase</title>
+    <title>MakeLifeBetter - Gerenciamento Firebase</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Sistema de Gerenciamento</h1>
-        
+        <h1>MakeLifeBetter - Gerenciamento</h1>
+
         <!-- Seção de Login -->
         <div id="auth-section">
             <h2>Login</h2>
@@ -23,75 +23,88 @@
         <div id="main-section" style="display: none;">
             <!-- Navegação entre tabelas -->
             <div class="nav-tabs">
-                <button class="tab-btn active" onclick="showTab('eventos')">Eventos</button>
-                <button class="tab-btn" onclick="showTab('event_location')">Locais</button>
-                <button class="tab-btn" onclick="showTab('duvidas')">Dúvidas</button>
-                <button class="tab-btn" onclick="showTab('lista_geral')">Lista Geral</button>
-                <button class="tab-btn" onclick="showTab('users')">Usuários</button>
+                <button class="tab-btn active" onclick="showTab('eventos', event)">Eventos</button>
+                <button class="tab-btn" onclick="showTab('event_location', event)">Locais</button>
+                <button class="tab-btn" onclick="showTab('duvidas', event)">Dúvidas</button>
+                <button class="tab-btn" onclick="showTab('lista_geral', event)">Chat Geral</button>
+                <button class="tab-btn" onclick="showTab('users', event)">Usuários</button>
             </div>
 
             <!-- Tab Eventos -->
+            <!-- Campos Firebase: titulo, subtitulo, descricao, hora, lugar, categoria -->
             <div id="eventos-tab" class="tab-content active">
                 <h2>Gerenciar Eventos</h2>
                 <div class="form-section">
-                    <input type="text" id="evento-nome" placeholder="Nome do Evento">
-                    <input type="text" id="evento-descricao" placeholder="Descrição">
-                    <input type="date" id="evento-data" placeholder="Data">
-                    <input type="text" id="evento-local" placeholder="Local">
+                    <input type="text" id="evento-titulo" placeholder="Título do Evento">
+                    <input type="text" id="evento-subtitulo" placeholder="Subtítulo">
+                    <textarea id="evento-descricao" placeholder="Descrição"></textarea>
+                    <input type="text" id="evento-hora" placeholder="Hora (ex: 09:00)">
+                    <input type="text" id="evento-lugar" placeholder="Lugar">
+                    <select id="evento-categoria">
+                        <option value="">Selecione a categoria</option>
+                        <option value="agora">Agora</option>
+                        <option value="programado">Programado</option>
+                        <option value="novidade">Novidade</option>
+                        <option value="contato">Contato</option>
+                        <option value="cupom">Cupom</option>
+                        <option value="cerimonia">Cerimônia</option>
+                        <option value="intervalo">Intervalo</option>
+                        <option value="palestra">Palestra</option>
+                        <option value="refeicao">Refeição</option>
+                        <option value="workshop">Workshop</option>
+                    </select>
                     <button onclick="addEvento()">Adicionar Evento</button>
                 </div>
                 <div id="eventos-list" class="items-list"></div>
             </div>
 
             <!-- Tab Event Location -->
+            <!-- Campos Firebase: name, address, city, latitude, longitude -->
+            <!-- Subcoleção: contacts (name, phone) -->
             <div id="event_location-tab" class="tab-content">
                 <h2>Gerenciar Locais de Eventos</h2>
                 <div class="form-section">
-                    <input type="text" id="location-nome" placeholder="Nome do Local">
-                    <input type="text" id="location-endereco" placeholder="Endereço">
-                    <input type="number" id="location-capacidade" placeholder="Capacidade">
+                    <input type="text" id="location-name" placeholder="Nome do Local">
+                    <input type="text" id="location-address" placeholder="Endereço">
+                    <input type="text" id="location-city" placeholder="Cidade">
+                    <input type="number" id="location-latitude" step="any" placeholder="Latitude">
+                    <input type="number" id="location-longitude" step="any" placeholder="Longitude">
                     <button onclick="addEventLocation()">Adicionar Local</button>
                 </div>
                 <div id="event_location-list" class="items-list"></div>
             </div>
 
             <!-- Tab Dúvidas -->
+            <!-- Campos Firebase: title, description, author, replies, timestamp -->
+            <!-- Subcoleção: respostas (author, content, timestamp) -->
             <div id="duvidas-tab" class="tab-content">
-                <h2>Gerenciar Dúvidas</h2>
+                <h2>Dúvidas e Perguntas</h2>
                 <div class="form-section">
-                    <input type="text" id="duvida-titulo" placeholder="Título da Dúvida">
-                    <textarea id="duvida-pergunta" placeholder="Pergunta"></textarea>
-                    <textarea id="duvida-resposta" placeholder="Resposta"></textarea>
-                    <button onclick="addDuvida()">Adicionar Dúvida</button>
+                    <input type="text" id="duvida-title" placeholder="Título da Dúvida">
+                    <textarea id="duvida-description" placeholder="Descrição da sua dúvida..."></textarea>
+                    <button onclick="addDuvida()">Fazer Pergunta</button>
                 </div>
                 <div id="duvidas-list" class="items-list"></div>
             </div>
 
-            <!-- Tab Lista Geral -->
+            <!-- Tab Lista Geral (Chat) -->
+            <!-- Campos Firebase: author, message, timestamp -->
             <div id="lista_geral-tab" class="tab-content">
-                <h2>Lista Geral</h2>
-                <div class="form-section">
-                    <input type="text" id="lista-item" placeholder="Item">
-                    <input type="text" id="lista-categoria" placeholder="Categoria">
-                    <textarea id="lista-observacoes" placeholder="Observações"></textarea>
-                    <button onclick="addListaGeral()">Adicionar Item</button>
+                <h2>Chat Geral</h2>
+                <div id="lista_geral-list" class="chat-container"></div>
+                <div class="chat-input-section">
+                    <textarea id="chat-message" placeholder="Digite sua mensagem..."></textarea>
+                    <button onclick="addListaGeral()">Enviar</button>
                 </div>
-                <div id="lista_geral-list" class="items-list"></div>
             </div>
 
             <!-- Tab Users -->
+            <!-- Campos Firebase: id, username, email, createdAt -->
             <div id="users-tab" class="tab-content">
                 <h2>Gerenciar Usuários</h2>
                 <div class="form-section">
-                    <input type="text" id="user-nome" placeholder="Nome">
+                    <input type="text" id="user-username" placeholder="Username">
                     <input type="email" id="user-email" placeholder="Email">
-                    <input type="text" id="user-telefone" placeholder="Telefone">
-                    <select id="user-tipo">
-                        <option value="">Selecione o tipo</option>
-                        <option value="admin">Admin</option>
-                        <option value="user">Usuário</option>
-                        <option value="moderator">Moderador</option>
-                    </select>
                     <button onclick="addUser()">Adicionar Usuário</button>
                 </div>
                 <div id="users-list" class="items-list"></div>
