@@ -115,6 +115,9 @@ function loadCurrentTabData() {
         case 'users':
             loadUsers();
             break;
+        case 'produtos':
+            loadProdutos();
+            break;
     }
 }
 
@@ -723,5 +726,311 @@ window.deleteItem = async function(collection_name, itemId) {
         alert('Item deletado com sucesso!');
     } catch (error) {
         alert('Erro ao deletar item: ' + error.message);
+    }
+}
+
+// ============================================
+// CRUD para Produtos (E-commerce)
+// Estrutura Firebase: nome, descricao, preco, precoPromocional, imagem, categoria, estoque, ativo, createdAt, updatedAt
+// ============================================
+
+// Armazena todos os produtos para filtros
+let allProdutos = [];
+let categoriasSet = new Set();
+
+// Preview da imagem
+const imagemInput = document.getElementById('produto-imagem');
+if (imagemInput) {
+    imagemInput.addEventListener('input', function() {
+        const preview = document.getElementById('produto-imagem-preview');
+        const url = this.value;
+        if (url) {
+            preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<p class=\\'error\\'>Imagem não encontrada</p>'">`;
+        } else {
+            preview.innerHTML = '';
+        }
+    });
+}
+
+// Adicionar ou atualizar produto
+window.addOrUpdateProduto = async function() {
+    const editId = document.getElementById('produto-edit-id').value;
+    const nome = document.getElementById('produto-nome').value;
+    const descricao = document.getElementById('produto-descricao').value;
+    const preco = document.getElementById('produto-preco').value;
+    const precoPromocional = document.getElementById('produto-preco-promocional').value;
+    const imagem = document.getElementById('produto-imagem').value;
+    const categoria = document.getElementById('produto-categoria').value;
+    const estoque = document.getElementById('produto-estoque').value;
+    const ativo = document.getElementById('produto-ativo').value === 'true';
+
+    if (!nome || !preco) {
+        alert('Por favor, preencha pelo menos o nome e o preço!');
+        return;
+    }
+
+    const produtoData = {
+        nome,
+        descricao: descricao || '',
+        preco: parseFloat(preco),
+        precoPromocional: precoPromocional ? parseFloat(precoPromocional) : null,
+        imagem: imagem || '',
+        categoria: categoria || 'Geral',
+        estoque: estoque ? parseInt(estoque) : 0,
+        ativo,
+        updatedAt: Date.now()
+    };
+
+    try {
+        if (editId) {
+            // Atualizar produto existente
+            await updateDoc(doc(db, 'produtos', editId), produtoData);
+            alert('Produto atualizado com sucesso!');
+        } else {
+            // Adicionar novo produto
+            produtoData.createdAt = Date.now();
+            await addDoc(collection(db, 'produtos'), produtoData);
+            alert('Produto adicionado com sucesso!');
+        }
+
+        clearProdutoForm();
+        loadProdutos();
+    } catch (error) {
+        alert('Erro ao salvar produto: ' + error.message);
+    }
+}
+
+// Limpar formulário de produto
+function clearProdutoForm() {
+    document.getElementById('produto-edit-id').value = '';
+    document.getElementById('produto-nome').value = '';
+    document.getElementById('produto-descricao').value = '';
+    document.getElementById('produto-preco').value = '';
+    document.getElementById('produto-preco-promocional').value = '';
+    document.getElementById('produto-imagem').value = '';
+    document.getElementById('produto-categoria').value = '';
+    document.getElementById('produto-estoque').value = '';
+    document.getElementById('produto-ativo').value = 'true';
+    document.getElementById('produto-imagem-preview').innerHTML = '';
+    document.getElementById('produto-submit-btn').textContent = 'Adicionar Produto';
+    document.getElementById('produto-cancel-btn').style.display = 'none';
+}
+
+// Cancelar edição
+window.cancelEditProduto = function() {
+    clearProdutoForm();
+}
+
+// Carregar produtos
+async function loadProdutos() {
+    try {
+        const q = query(collection(db, 'produtos'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const list = document.getElementById('produtos-list');
+        list.innerHTML = '';
+
+        allProdutos = [];
+        categoriasSet = new Set();
+
+        if (querySnapshot.empty) {
+            list.innerHTML = '<p class="no-data">Nenhum produto encontrado. Adicione seu primeiro produto!</p>';
+            return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+            const produto = { id: docSnap.id, ...docSnap.data() };
+            allProdutos.push(produto);
+            if (produto.categoria) {
+                categoriasSet.add(produto.categoria);
+            }
+        });
+
+        // Atualizar dropdown de categorias
+        updateCategoriasFilter();
+
+        // Renderizar produtos
+        renderProdutos(allProdutos);
+
+    } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+        // Tentar sem ordenação
+        try {
+            const querySnapshot = await getDocs(collection(db, 'produtos'));
+            const list = document.getElementById('produtos-list');
+
+            allProdutos = [];
+            categoriasSet = new Set();
+
+            if (querySnapshot.empty) {
+                list.innerHTML = '<p class="no-data">Nenhum produto encontrado. Adicione seu primeiro produto!</p>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const produto = { id: docSnap.id, ...docSnap.data() };
+                allProdutos.push(produto);
+                if (produto.categoria) {
+                    categoriasSet.add(produto.categoria);
+                }
+            });
+
+            updateCategoriasFilter();
+            renderProdutos(allProdutos);
+        } catch (error2) {
+            alert('Erro ao carregar produtos: ' + error2.message);
+        }
+    }
+}
+
+// Atualizar filtro de categorias
+function updateCategoriasFilter() {
+    const select = document.getElementById('produtos-filter-categoria');
+    if (!select) return;
+
+    const currentValue = select.value;
+    select.innerHTML = '<option value="">Todas as categorias</option>';
+
+    categoriasSet.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        select.appendChild(option);
+    });
+
+    select.value = currentValue;
+}
+
+// Renderizar produtos na grid
+function renderProdutos(produtos) {
+    const list = document.getElementById('produtos-list');
+    list.innerHTML = '';
+
+    if (produtos.length === 0) {
+        list.innerHTML = '<p class="no-data">Nenhum produto encontrado com os filtros aplicados.</p>';
+        return;
+    }
+
+    produtos.forEach((produto) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = `produto-card ${!produto.ativo ? 'inativo' : ''}`;
+
+        const precoFormatado = produto.preco ? `R$ ${produto.preco.toFixed(2)}` : 'N/A';
+        const precoPromoFormatado = produto.precoPromocional ? `R$ ${produto.precoPromocional.toFixed(2)}` : null;
+        const date = produto.createdAt ? new Date(produto.createdAt).toLocaleDateString('pt-BR') : 'N/A';
+
+        itemDiv.innerHTML = `
+            <div class="produto-image">
+                ${produto.imagem ? `<img src="${produto.imagem}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/200x200?text=Sem+Imagem'">` : '<div class="no-image">Sem imagem</div>'}
+                ${!produto.ativo ? '<span class="status-badge inativo">Inativo</span>' : ''}
+                ${produto.precoPromocional ? '<span class="status-badge promo">Promoção</span>' : ''}
+            </div>
+            <div class="produto-info">
+                <h3>${produto.nome || 'Sem nome'}</h3>
+                <p class="produto-categoria">${produto.categoria || 'Sem categoria'}</p>
+                <p class="produto-descricao">${produto.descricao || ''}</p>
+                <div class="produto-preco">
+                    ${precoPromoFormatado ? `<span class="preco-original">${precoFormatado}</span><span class="preco-promo">${precoPromoFormatado}</span>` : `<span class="preco">${precoFormatado}</span>`}
+                </div>
+                <p class="produto-estoque">Estoque: ${produto.estoque || 0} unidades</p>
+                <p class="produto-data">Criado em: ${date}</p>
+            </div>
+            <div class="produto-actions">
+                <button class="edit-btn" onclick="editProduto('${produto.id}')">Editar</button>
+                <button class="toggle-btn ${produto.ativo ? 'desativar' : 'ativar'}" onclick="toggleProdutoStatus('${produto.id}', ${!produto.ativo})">
+                    ${produto.ativo ? 'Desativar' : 'Ativar'}
+                </button>
+                <button class="delete-btn" onclick="deleteProduto('${produto.id}')">Excluir</button>
+            </div>
+        `;
+        list.appendChild(itemDiv);
+    });
+}
+
+// Filtrar produtos
+window.filterProdutos = function() {
+    const searchTerm = document.getElementById('produtos-search').value.toLowerCase();
+    const categoriaFilter = document.getElementById('produtos-filter-categoria').value;
+    const statusFilter = document.getElementById('produtos-filter-status').value;
+
+    let filtered = allProdutos;
+
+    // Filtrar por texto
+    if (searchTerm) {
+        filtered = filtered.filter(p =>
+            (p.nome && p.nome.toLowerCase().includes(searchTerm)) ||
+            (p.descricao && p.descricao.toLowerCase().includes(searchTerm))
+        );
+    }
+
+    // Filtrar por categoria
+    if (categoriaFilter) {
+        filtered = filtered.filter(p => p.categoria === categoriaFilter);
+    }
+
+    // Filtrar por status
+    if (statusFilter !== '') {
+        const isAtivo = statusFilter === 'true';
+        filtered = filtered.filter(p => p.ativo === isAtivo);
+    }
+
+    renderProdutos(filtered);
+}
+
+// Editar produto
+window.editProduto = function(produtoId) {
+    const produto = allProdutos.find(p => p.id === produtoId);
+    if (!produto) {
+        alert('Produto não encontrado!');
+        return;
+    }
+
+    document.getElementById('produto-edit-id').value = produtoId;
+    document.getElementById('produto-nome').value = produto.nome || '';
+    document.getElementById('produto-descricao').value = produto.descricao || '';
+    document.getElementById('produto-preco').value = produto.preco || '';
+    document.getElementById('produto-preco-promocional').value = produto.precoPromocional || '';
+    document.getElementById('produto-imagem').value = produto.imagem || '';
+    document.getElementById('produto-categoria').value = produto.categoria || '';
+    document.getElementById('produto-estoque').value = produto.estoque || '';
+    document.getElementById('produto-ativo').value = produto.ativo ? 'true' : 'false';
+
+    // Preview da imagem
+    const preview = document.getElementById('produto-imagem-preview');
+    if (produto.imagem) {
+        preview.innerHTML = `<img src="${produto.imagem}" alt="Preview">`;
+    }
+
+    document.getElementById('produto-submit-btn').textContent = 'Atualizar Produto';
+    document.getElementById('produto-cancel-btn').style.display = 'inline-block';
+
+    // Scroll para o formulário
+    document.querySelector('.produto-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Alternar status do produto
+window.toggleProdutoStatus = async function(produtoId, novoStatus) {
+    try {
+        await updateDoc(doc(db, 'produtos', produtoId), {
+            ativo: novoStatus,
+            updatedAt: Date.now()
+        });
+        loadProdutos();
+    } catch (error) {
+        alert('Erro ao alterar status: ' + error.message);
+    }
+}
+
+// Deletar produto
+window.deleteProduto = async function(produtoId) {
+    if (!confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita.')) {
+        return;
+    }
+
+    try {
+        await deleteDoc(doc(db, 'produtos', produtoId));
+        loadProdutos();
+        alert('Produto excluído com sucesso!');
+    } catch (error) {
+        alert('Erro ao excluir produto: ' + error.message);
     }
 }

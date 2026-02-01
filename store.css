@@ -1,0 +1,605 @@
+/* ============================================
+   Store CSS - Loja Pública
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header */
+.store-header {
+    background: linear-gradient(135deg, #4CAF50, #2e7d32);
+    color: white;
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.logo .tagline {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.hero-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Filters Section */
+.filters-section {
+    background: white;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filters-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-options select {
+    padding: 12px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 1rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.filter-options select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Products Section */
+.products-section {
+    padding: 40px 20px;
+}
+
+.products-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* Product Card */
+.product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.product-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 1rem;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff5252;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.product-details {
+    padding: 20px;
+}
+
+.product-category {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.product-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.product-price {
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.original-price {
+    font-size: 1rem;
+    color: #999;
+    text-decoration: line-through;
+    margin-right: 10px;
+}
+
+.promo-price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff5252;
+}
+
+.stock {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.stock.in-stock {
+    color: #4CAF50;
+}
+
+.stock.out-of-stock {
+    color: #f44336;
+}
+
+/* Loading & Messages */
+.loading, .no-products, .error {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.error {
+    color: #f44336;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    color: #666;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.modal-product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.modal-image {
+    position: relative;
+    background: #f5f5f5;
+    border-radius: 15px 0 0 15px;
+    overflow: hidden;
+}
+
+.modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 400px;
+}
+
+.modal-image .placeholder-image.large {
+    min-height: 400px;
+    font-size: 1.2rem;
+}
+
+.modal-image .discount-badge.large {
+    font-size: 1.1rem;
+    padding: 8px 16px;
+}
+
+.modal-info {
+    padding: 30px 30px 30px 0;
+}
+
+.modal-category {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.modal-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.modal-description {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+.modal-price-section {
+    margin-bottom: 20px;
+}
+
+.modal-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.modal-prices {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+.modal-original-price {
+    font-size: 1.3rem;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.modal-promo-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff5252;
+}
+
+.modal-discount {
+    background: #ffebee;
+    color: #f44336;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.modal-stock {
+    margin-bottom: 25px;
+}
+
+.stock-status {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.stock-status.available {
+    color: #4CAF50;
+}
+
+.stock-status.unavailable {
+    color: #f44336;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-buy, .btn-cart, .btn-notify {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-buy {
+    background: #4CAF50;
+    color: white;
+    flex: 1;
+}
+
+.btn-buy:hover {
+    background: #43a047;
+    transform: translateY(-2px);
+}
+
+.btn-cart {
+    background: white;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+}
+
+.btn-cart:hover {
+    background: #e8f5e9;
+}
+
+.btn-notify {
+    background: #ff9800;
+    color: white;
+    width: 100%;
+}
+
+.btn-notify:hover {
+    background: #f57c00;
+}
+
+/* Footer */
+.store-footer {
+    background: #333;
+    color: white;
+    padding: 40px 20px 20px;
+    margin-top: 40px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #4CAF50;
+}
+
+.footer-section p {
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #555;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-options {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .modal-product {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-image {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-image img {
+        min-height: 250px;
+    }
+
+    .modal-info {
+        padding: 20px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .btn-buy, .btn-cart {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-options {
+        flex-direction: column;
+    }
+
+    .filter-options select {
+        width: 100%;
+    }
+}

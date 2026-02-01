@@ -28,6 +28,7 @@
                 <button class="tab-btn" onclick="showTab('duvidas', event)">Dúvidas</button>
                 <button class="tab-btn" onclick="showTab('lista_geral', event)">Chat Geral</button>
                 <button class="tab-btn" onclick="showTab('users', event)">Usuários</button>
+                <button class="tab-btn produtos-tab-btn" onclick="showTab('produtos', event)">Produtos</button>
             </div>
 
             <!-- Tab Eventos -->
@@ -108,6 +109,52 @@
                     <button onclick="addUser()">Adicionar Usuário</button>
                 </div>
                 <div id="users-list" class="items-list"></div>
+            </div>
+
+            <!-- Tab Produtos (E-commerce) -->
+            <!-- Campos Firebase: nome, descricao, preco, precoPromocional, imagem, categoria, estoque, ativo, createdAt, updatedAt -->
+            <div id="produtos-tab" class="tab-content">
+                <h2>Gerenciar Produtos</h2>
+                <div class="store-link">
+                    <a href="store.html" target="_blank" class="view-store-btn">Ver Loja Pública</a>
+                </div>
+                <div class="form-section produto-form">
+                    <input type="hidden" id="produto-edit-id">
+                    <div class="form-row">
+                        <input type="text" id="produto-nome" placeholder="Nome do Produto" required>
+                        <input type="text" id="produto-categoria" placeholder="Categoria (ex: Eletrônicos, Roupas)">
+                    </div>
+                    <textarea id="produto-descricao" placeholder="Descrição detalhada do produto..."></textarea>
+                    <div class="form-row">
+                        <input type="number" id="produto-preco" placeholder="Preço (R$)" step="0.01" min="0" required>
+                        <input type="number" id="produto-preco-promocional" placeholder="Preço Promocional (opcional)" step="0.01" min="0">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="produto-estoque" placeholder="Quantidade em Estoque" min="0">
+                        <select id="produto-ativo">
+                            <option value="true">Ativo (visível na loja)</option>
+                            <option value="false">Inativo (oculto)</option>
+                        </select>
+                    </div>
+                    <input type="url" id="produto-imagem" placeholder="URL da Imagem do Produto">
+                    <div class="image-preview" id="produto-imagem-preview"></div>
+                    <div class="form-actions">
+                        <button onclick="addOrUpdateProduto()" id="produto-submit-btn">Adicionar Produto</button>
+                        <button onclick="cancelEditProduto()" id="produto-cancel-btn" class="cancel-btn" style="display:none;">Cancelar Edição</button>
+                    </div>
+                </div>
+                <div class="produtos-filter">
+                    <input type="text" id="produtos-search" placeholder="Buscar produtos..." oninput="filterProdutos()">
+                    <select id="produtos-filter-categoria" onchange="filterProdutos()">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                    <select id="produtos-filter-status" onchange="filterProdutos()">
+                        <option value="">Todos os status</option>
+                        <option value="true">Ativos</option>
+                        <option value="false">Inativos</option>
+                    </select>
+                </div>
+                <div id="produtos-list" class="produtos-grid"></div>
             </div>
 
             <div class="logout-section">
