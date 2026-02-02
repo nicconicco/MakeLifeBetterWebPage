@@ -4,21 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MakeLifeBetter - Loja</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="store.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Header da Loja -->
     <header class="store-header">
         <div class="header-container">
-            <div class="logo">
-                <h1>MakeLifeBetter</h1>
-                <span class="tagline">Produtos que fazem a diferença</span>
-            </div>
+            <a href="store.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>MakeLifeBetter</h1>
+                    <span class="tagline">Produtos que fazem a diferença</span>
+                </div>
+            </a>
+
             <nav class="header-nav">
-                <a href="store.html" class="active">Loja</a>
-                <a href="index.html">Admin</a>
+                <a href="store.html" class="nav-link active">
+                    <i class="fas fa-store"></i>
+                    <span>Loja</span>
+                </a>
+                <a href="#categorias" class="nav-link">
+                    <i class="fas fa-th-large"></i>
+                    <span>Categorias</span>
+                </a>
             </nav>
+
+            <div class="header-actions">
+                <!-- Área do usuário (logado) -->
+                <div id="user-area" class="user-area" style="display: none;">
+                    <div class="user-menu" onclick="toggleUserDropdown()">
+                        <div class="user-avatar" id="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span class="user-name" id="user-display-name">Usuário</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" onclick="showProfile(); return false;">
+                            <i class="fas fa-user-circle"></i> Meu Perfil
+                        </a>
+                        <a href="#" onclick="showOrders(); return false;">
+                            <i class="fas fa-shopping-bag"></i> Meus Pedidos
+                        </a>
+                        <a href="#" id="admin-link" style="display: none;" onclick="goToAdmin(); return false;">
+                            <i class="fas fa-cog"></i> Painel Admin
+                        </a>
+                        <hr>
+                        <a href="#" onclick="doLogout(); return false;" class="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Botão de Login (deslogado) -->
+                <button id="login-btn" class="login-btn" onclick="showLoginModal()">
+                    <i class="fas fa-user"></i>
+                    <span>Entrar</span>
+                </button>
+
+                <!-- Carrinho -->
+                <button class="cart-btn" onclick="showCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -26,9 +79,34 @@
     <main class="store-main">
         <!-- Banner / Hero -->
         <section class="hero-section">
+            <div class="hero-overlay"></div>
             <div class="hero-content">
-                <h2>Bem-vindo à nossa Loja</h2>
-                <p>Descubra produtos incríveis com os melhores preços</p>
+                <span class="hero-badge">Novidades</span>
+                <h2>Descubra Produtos Incríveis</h2>
+                <p>Qualidade e preços que fazem a diferença na sua vida</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="total-products">0</span>
+                        <span class="stat-label">Produtos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-categories">0</span>
+                        <span class="stat-label">Categorias</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Satisfação</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorias Rápidas -->
+        <section class="categories-section" id="categorias">
+            <div class="section-container">
+                <div class="categories-scroll" id="categories-list">
+                    <!-- Categorias serão carregadas via JS -->
+                </div>
             </div>
         </section>
 
@@ -36,6 +114,7 @@
         <section class="filters-section">
             <div class="filters-container">
                 <div class="search-box">
+                    <i class="fas fa-search"></i>
                     <input type="text" id="search-input" placeholder="Buscar produtos..." oninput="filterStoreProducts()">
                 </div>
                 <div class="filter-options">
@@ -55,16 +134,138 @@
         <!-- Grid de Produtos -->
         <section class="products-section">
             <div class="products-container">
+                <div class="section-header">
+                    <h3>Todos os Produtos</h3>
+                    <span class="products-count" id="products-count">0 produtos</span>
+                </div>
                 <div id="products-grid" class="products-grid">
-                    <p class="loading">Carregando produtos...</p>
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Carregando produtos...</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content login-modal-content">
+            <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="login-logo">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h2 id="login-title">Entrar</h2>
+                    <p id="login-subtitle">Acesse sua conta para continuar</p>
+                </div>
+
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" placeholder="seu@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Senha</label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Sua senha" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="login-submit-btn">
+                        <span>Entrar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="login-divider">
+                    <span>ou</span>
+                </div>
+
+                <button class="btn-secondary" onclick="toggleRegisterMode()">
+                    <span id="toggle-register-text">Criar nova conta</span>
+                </button>
+
+                <p class="login-footer" id="login-footer-text">
+                    Ao continuar, você concorda com nossos Termos de Uso
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Perfil do Usuário -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content profile-modal-content">
+            <span class="close-modal" onclick="closeProfileModal()">&times;</span>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 id="profile-name">Carregando...</h2>
+                    <p id="profile-email">email@example.com</p>
+                    <span class="profile-badge" id="profile-badge">Usuário</span>
+                </div>
+
+                <form id="profile-form" onsubmit="updateProfile(event)">
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-edit"></i> Informações Pessoais</h3>
+
+                        <div class="form-group">
+                            <label for="profile-username">Nome de Usuário</label>
+                            <div class="input-icon">
+                                <i class="fas fa-at"></i>
+                                <input type="text" id="profile-username" placeholder="Seu username">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profile-display-email">Email</label>
+                            <div class="input-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="profile-display-email" placeholder="seu@email.com" disabled>
+                            </div>
+                            <small>O email não pode ser alterado</small>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-lock"></i> Alterar Senha</h3>
+
+                        <div class="form-group">
+                            <label for="profile-new-password">Nova Senha (deixe em branco para manter)</label>
+                            <div class="input-icon">
+                                <i class="fas fa-key"></i>
+                                <input type="password" id="profile-new-password" placeholder="Nova senha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span>Salvar Alterações</span>
+                        </button>
+                        <button type="button" class="btn-outline" onclick="closeProfileModal()">
+                            <span>Cancelar</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="profile-info">
+                    <p><i class="fas fa-calendar"></i> Membro desde: <span id="profile-created-at">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Detalhes do Produto -->
     <div id="product-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content product-modal-content">
             <span class="close-modal" onclick="closeProductModal()">&times;</span>
             <div id="modal-body"></div>
         </div>
@@ -73,23 +274,51 @@
     <!-- Footer -->
     <footer class="store-footer">
         <div class="footer-container">
+            <div class="footer-section footer-brand">
+                <div class="footer-logo">
+                    <i class="fas fa-leaf"></i>
+                    <h4>MakeLifeBetter</h4>
+                </div>
+                <p>Tornando sua vida melhor, um produto de cada vez. Qualidade, preço justo e satisfação garantida.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
             <div class="footer-section">
-                <h4>MakeLifeBetter</h4>
-                <p>Tornando sua vida melhor, um produto de cada vez.</p>
+                <h4>Links Rápidos</h4>
+                <ul>
+                    <li><a href="store.html">Loja</a></li>
+                    <li><a href="#categorias">Categorias</a></li>
+                    <li><a href="#">Promoções</a></li>
+                    <li><a href="#">Novidades</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Ajuda</h4>
+                <ul>
+                    <li><a href="#">Central de Ajuda</a></li>
+                    <li><a href="#">Como Comprar</a></li>
+                    <li><a href="#">Trocas e Devoluções</a></li>
+                    <li><a href="#">Fale Conosco</a></li>
+                </ul>
             </div>
             <div class="footer-section">
                 <h4>Contato</h4>
-                <p>contato@makelifebetter.com</p>
-            </div>
-            <div class="footer-section">
-                <h4>Redes Sociais</h4>
-                <p>Instagram | Facebook | Twitter</p>
+                <p><i class="fas fa-envelope"></i> contato@makelifebetter.com</p>
+                <p><i class="fas fa-phone"></i> (11) 99999-9999</p>
+                <p><i class="fas fa-map-marker-alt"></i> São Paulo, SP</p>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2024 MakeLifeBetter. Todos os direitos reservados.</p>
         </div>
     </footer>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script type="module" src="store.js"></script>
 </body>
