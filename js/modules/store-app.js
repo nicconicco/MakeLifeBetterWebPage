@@ -84,11 +84,15 @@ import {
     setupEscapeKey,
     setupClickOutside,
     getElement,
-    setText,
-    toggleElement
+    setText
 } from '../utils/dom.js';
 
-import { formatDate } from '../utils/formatters.js';
+import {
+    formatDate,
+    formatCEP,
+    formatCardNumber,
+    formatCardExpiry
+} from '../utils/formatters.js';
 
 // Constants
 import {
