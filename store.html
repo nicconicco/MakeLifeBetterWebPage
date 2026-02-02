@@ -271,6 +271,384 @@
         </div>
     </div>
 
+    <!-- Sidebar do Carrinho -->
+    <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
+    <aside id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2><i class="fas fa-shopping-cart"></i> Meu Carrinho</h2>
+            <button class="close-cart-btn" onclick="closeCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- Itens do carrinho serão inseridos aqui -->
+        </div>
+        <div id="cart-empty" class="cart-empty">
+            <i class="fas fa-shopping-basket"></i>
+            <h3>Seu carrinho está vazio</h3>
+            <p>Adicione produtos para começar suas compras</p>
+            <button class="btn-primary" onclick="closeCart()">
+                <i class="fas fa-store"></i>
+                <span>Continuar Comprando</span>
+            </button>
+        </div>
+        <div id="cart-footer" class="cart-footer" style="display: none;">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cart-subtotal-value">R$ 0,00</span>
+            </div>
+            <div class="cart-shipping">
+                <span>Frete</span>
+                <span id="cart-shipping-value">Calcular no checkout</span>
+            </div>
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total-value">R$ 0,00</span>
+            </div>
+            <button class="btn-checkout" onclick="goToCheckout()">
+                <i class="fas fa-lock"></i>
+                <span>Finalizar Compra</span>
+            </button>
+            <button class="btn-continue" onclick="closeCart()">
+                Continuar Comprando
+            </button>
+        </div>
+    </aside>
+
+    <!-- Modal de Checkout -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content checkout-modal-content">
+            <span class="close-modal" onclick="closeCheckoutModal()">&times;</span>
+            <div class="checkout-container">
+                <!-- Stepper -->
+                <div class="checkout-stepper">
+                    <div class="step active" id="step-1">
+                        <div class="step-number">1</div>
+                        <span>Endereço</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" id="step-2">
+                        <div class="step-number">2</div>
+                        <span>Pagamento</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" id="step-3">
+                        <div class="step-number">3</div>
+                        <span>Confirmação</span>
+                    </div>
+                </div>
+
+                <!-- Step 1: Endereço -->
+                <div id="checkout-step-1" class="checkout-step active">
+                    <h2>Endereço de Entrega</h2>
+                    <form id="address-form" class="checkout-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="checkout-name">Nome Completo *</label>
+                                <input type="text" id="checkout-name" required placeholder="Seu nome completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-phone">Telefone *</label>
+                                <input type="tel" id="checkout-phone" required placeholder="(11) 99999-9999">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group small">
+                                <label for="checkout-cep">CEP *</label>
+                                <input type="text" id="checkout-cep" required placeholder="00000-000" maxlength="9" oninput="formatCEP(this); calculateShipping()">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-street">Rua *</label>
+                                <input type="text" id="checkout-street" required placeholder="Nome da rua">
+                            </div>
+                            <div class="form-group small">
+                                <label for="checkout-number">Número *</label>
+                                <input type="text" id="checkout-number" required placeholder="123">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="checkout-complement">Complemento</label>
+                                <input type="text" id="checkout-complement" placeholder="Apto, Bloco, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label for="checkout-neighborhood">Bairro *</label>
+                                <input type="text" id="checkout-neighborhood" required placeholder="Seu bairro">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="checkout-city">Cidade *</label>
+                                <input type="text" id="checkout-city" required placeholder="Sua cidade">
+                            </div>
+                            <div class="form-group small">
+                                <label for="checkout-state">Estado *</label>
+                                <select id="checkout-state" required>
+                                    <option value="">UF</option>
+                                    <option value="AC">AC</option>
+                                    <option value="AL">AL</option>
+                                    <option value="AP">AP</option>
+                                    <option value="AM">AM</option>
+                                    <option value="BA">BA</option>
+                                    <option value="CE">CE</option>
+                                    <option value="DF">DF</option>
+                                    <option value="ES">ES</option>
+                                    <option value="GO">GO</option>
+                                    <option value="MA">MA</option>
+                                    <option value="MT">MT</option>
+                                    <option value="MS">MS</option>
+                                    <option value="MG">MG</option>
+                                    <option value="PA">PA</option>
+                                    <option value="PB">PB</option>
+                                    <option value="PR">PR</option>
+                                    <option value="PE">PE</option>
+                                    <option value="PI">PI</option>
+                                    <option value="RJ">RJ</option>
+                                    <option value="RN">RN</option>
+                                    <option value="RS">RS</option>
+                                    <option value="RO">RO</option>
+                                    <option value="RR">RR</option>
+                                    <option value="SC">SC</option>
+                                    <option value="SP">SP</option>
+                                    <option value="SE">SE</option>
+                                    <option value="TO">TO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="shipping-options" id="shipping-options">
+                            <h3>Opções de Frete</h3>
+                            <div class="shipping-option selected" onclick="selectShipping('normal', 15.90, '5-8 dias')">
+                                <input type="radio" name="shipping" value="normal" checked>
+                                <div class="shipping-info">
+                                    <span class="shipping-name">Normal</span>
+                                    <span class="shipping-time">5-8 dias úteis</span>
+                                </div>
+                                <span class="shipping-price">R$ 15,90</span>
+                            </div>
+                            <div class="shipping-option" onclick="selectShipping('express', 29.90, '2-3 dias')">
+                                <input type="radio" name="shipping" value="express">
+                                <div class="shipping-info">
+                                    <span class="shipping-name">Expresso</span>
+                                    <span class="shipping-time">2-3 dias úteis</span>
+                                </div>
+                                <span class="shipping-price">R$ 29,90</span>
+                            </div>
+                            <div class="shipping-option" onclick="selectShipping('sameday', 49.90, 'Hoje')">
+                                <input type="radio" name="shipping" value="sameday">
+                                <div class="shipping-info">
+                                    <span class="shipping-name">Same Day</span>
+                                    <span class="shipping-time">Receba hoje</span>
+                                </div>
+                                <span class="shipping-price">R$ 49,90</span>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="checkout-actions">
+                        <button class="btn-outline" onclick="closeCheckoutModal()">Voltar ao Carrinho</button>
+                        <button class="btn-primary" onclick="goToPaymentStep()">
+                            <span>Continuar para Pagamento</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Pagamento -->
+                <div id="checkout-step-2" class="checkout-step">
+                    <h2>Forma de Pagamento</h2>
+                    <div class="payment-methods">
+                        <div class="payment-method selected" onclick="selectPaymentMethod('credit')">
+                            <input type="radio" name="payment" value="credit" checked>
+                            <i class="fas fa-credit-card"></i>
+                            <span>Cartão de Crédito</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('debit')">
+                            <input type="radio" name="payment" value="debit">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Cartão de Débito</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('pix')">
+                            <input type="radio" name="payment" value="pix">
+                            <i class="fas fa-qrcode"></i>
+                            <span>PIX</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('boleto')">
+                            <input type="radio" name="payment" value="boleto">
+                            <i class="fas fa-barcode"></i>
+                            <span>Boleto Bancário</span>
+                        </div>
+                    </div>
+
+                    <!-- Formulário de Cartão -->
+                    <div id="card-form" class="card-form">
+                        <div class="card-preview">
+                            <div class="card-front">
+                                <div class="card-chip"></div>
+                                <div class="card-number" id="preview-card-number">•••• •••• •••• ••••</div>
+                                <div class="card-bottom">
+                                    <div class="card-holder" id="preview-card-holder">NOME NO CARTÃO</div>
+                                    <div class="card-expiry" id="preview-card-expiry">MM/AA</div>
+                                </div>
+                            </div>
+                        </div>
+                        <form id="payment-card-form" class="checkout-form">
+                            <div class="form-group">
+                                <label for="card-number">Número do Cartão</label>
+                                <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNumber(this)">
+                            </div>
+                            <div class="form-group">
+                                <label for="card-holder">Nome no Cartão</label>
+                                <input type="text" id="card-holder" placeholder="Como está no cartão" oninput="updateCardPreview()">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="card-expiry">Validade</label>
+                                    <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)">
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-cvv">CVV</label>
+                                    <input type="text" id="card-cvv" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="card-installments">Parcelas</label>
+                                <select id="card-installments">
+                                    <option value="1">1x sem juros</option>
+                                    <option value="2">2x sem juros</option>
+                                    <option value="3">3x sem juros</option>
+                                    <option value="4">4x sem juros</option>
+                                    <option value="5">5x sem juros</option>
+                                    <option value="6">6x sem juros</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- PIX -->
+                    <div id="pix-info" class="pix-info" style="display: none;">
+                        <div class="pix-qr">
+                            <i class="fas fa-qrcode"></i>
+                            <p>QR Code será gerado após confirmação</p>
+                        </div>
+                        <p class="pix-instructions">
+                            <i class="fas fa-info-circle"></i>
+                            Após confirmar, você terá 30 minutos para realizar o pagamento via PIX.
+                        </p>
+                    </div>
+
+                    <!-- Boleto -->
+                    <div id="boleto-info" class="boleto-info" style="display: none;">
+                        <p class="boleto-instructions">
+                            <i class="fas fa-info-circle"></i>
+                            O boleto será gerado após a confirmação do pedido. Prazo de vencimento: 3 dias úteis.
+                        </p>
+                    </div>
+
+                    <!-- Resumo do Pedido -->
+                    <div class="order-summary">
+                        <h3>Resumo do Pedido</h3>
+                        <div id="checkout-items-summary"></div>
+                        <div class="summary-line">
+                            <span>Subtotal</span>
+                            <span id="summary-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Frete</span>
+                            <span id="summary-shipping">R$ 0,00</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total</span>
+                            <span id="summary-total">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="checkout-actions">
+                        <button class="btn-outline" onclick="goToAddressStep()">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Voltar</span>
+                        </button>
+                        <button class="btn-primary" onclick="processPayment()">
+                            <i class="fas fa-lock"></i>
+                            <span>Confirmar Pagamento</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Confirmação -->
+                <div id="checkout-step-3" class="checkout-step">
+                    <div class="confirmation-success">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2>Pedido Confirmado!</h2>
+                        <p class="order-number">Pedido <strong id="order-number">#000000</strong></p>
+                        <p class="confirmation-message">
+                            Obrigado pela sua compra! Você receberá um email com os detalhes do pedido.
+                        </p>
+
+                        <div class="order-details-card">
+                            <h3>Detalhes do Pedido</h3>
+                            <div class="detail-row">
+                                <span>Status:</span>
+                                <span class="status-badge pending">Aguardando Pagamento</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Forma de Pagamento:</span>
+                                <span id="confirm-payment-method">Cartão de Crédito</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Previsão de Entrega:</span>
+                                <span id="confirm-delivery-date">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Endereço:</span>
+                                <span id="confirm-address">-</span>
+                            </div>
+                            <div class="detail-row total">
+                                <span>Total:</span>
+                                <span id="confirm-total">R$ 0,00</span>
+                            </div>
+                        </div>
+
+                        <div class="confirmation-actions">
+                            <button class="btn-primary" onclick="viewMyOrders()">
+                                <i class="fas fa-list"></i>
+                                <span>Ver Meus Pedidos</span>
+                            </button>
+                            <button class="btn-outline" onclick="continueShopping()">
+                                <span>Continuar Comprando</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Pedidos -->
+    <div id="orders-modal" class="modal">
+        <div class="modal-content orders-modal-content">
+            <span class="close-modal" onclick="closeOrdersModal()">&times;</span>
+            <div class="orders-container">
+                <h2><i class="fas fa-shopping-bag"></i> Meus Pedidos</h2>
+                <div id="orders-list" class="orders-list">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Carregando pedidos...</p>
+                    </div>
+                </div>
+                <div id="orders-empty" class="orders-empty" style="display: none;">
+                    <i class="fas fa-box-open"></i>
+                    <h3>Nenhum pedido encontrado</h3>
+                    <p>Você ainda não realizou nenhuma compra</p>
+                    <button class="btn-primary" onclick="closeOrdersModal()">
+                        <i class="fas fa-store"></i>
+                        <span>Ir às Compras</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="store-footer">
         <div class="footer-container">
