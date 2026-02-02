@@ -1,0 +1,214 @@
+/**
+ * Header Styles
+ */
+
+.store-header {
+    background: var(--color-secondary-gradient);
+    padding: 0 var(--spacing-xl);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.header-container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-height);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+.logo-icon {
+    width: 45px;
+    height: 45px;
+    background: var(--color-primary-gradient);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+}
+
+.logo-text h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.5px;
+}
+
+.logo .tagline {
+    font-size: var(--font-size-xs);
+    opacity: 0.7;
+    font-weight: var(--font-weight-normal);
+}
+
+.header-nav {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    padding: var(--spacing-sm) 18px;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-normal);
+}
+
+.nav-link:hover {
+    color: var(--color-white);
+    background: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+    color: var(--color-white);
+    background: rgba(76, 175, 80, 0.3);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+/* User Area */
+.user-area {
+    position: relative;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    transition: background var(--transition-normal);
+    color: var(--color-white);
+}
+
+.user-menu:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--color-primary-gradient);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+}
+
+.user-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--spacing-sm);
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    color: var(--color-gray-800);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: background var(--transition-fast);
+}
+
+.user-dropdown a:hover {
+    background: var(--color-gray-100);
+}
+
+.user-dropdown a i {
+    width: 20px;
+    color: var(--color-gray-600);
+}
+
+.user-dropdown hr {
+    border: none;
+    border-top: 1px solid var(--color-gray-200);
+    margin: var(--spacing-xs) 0;
+}
+
+.user-dropdown .logout-link {
+    color: var(--color-error);
+}
+
+.user-dropdown .logout-link i {
+    color: var(--color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+        height: auto;
+        padding: var(--spacing-lg) 0;
+        gap: var(--spacing-lg);
+    }
+
+    .header-nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .user-name {
+        display: none;
+    }
+
+    .logo-text h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    .logo .tagline {
+        display: none;
+    }
+}
