@@ -152,7 +152,7 @@
     justify-content: center;
     padding: var(--spacing-4xl);
     text-align: center;
-    color: var(--color-gray-600);
+    color: var(--color-on-light-muted);
 }
 
 .cart-empty i {
@@ -163,13 +163,14 @@
 
 .cart-empty h3 {
     font-size: var(--font-size-xl);
-    color: var(--color-gray-800);
+    color: var(--color-on-light-strong);
     margin-bottom: var(--spacing-sm);
 }
 
 .cart-empty p {
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-2xl);
+    color: var(--color-on-light-muted);
 }
 
 .cart-footer {

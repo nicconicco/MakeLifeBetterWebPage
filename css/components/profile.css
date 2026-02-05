@@ -11,6 +11,16 @@
     padding: var(--spacing-4xl);
 }
 
+/* Stronger text contrast inside profile form (modal background is white) */
+.profile-container .form-section h3,
+.profile-container .form-group label {
+    color: var(--color-on-light-strong);
+}
+
+.profile-container .form-group small {
+    color: var(--color-on-light-muted);
+}
+
 .profile-header {
     text-align: center;
     margin-bottom: var(--spacing-3xl);
@@ -31,12 +41,12 @@
 
 .profile-header h2 {
     font-size: var(--font-size-2xl);
-    color: var(--color-gray-900);
+    color: var(--color-on-light-strong);
     margin-bottom: var(--spacing-xs);
 }
 
 .profile-header p {
-    color: var(--color-gray-600);
+    color: var(--color-on-light-muted);
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-sm);
 }
@@ -78,7 +88,7 @@
 
 .profile-info p {
     font-size: var(--font-size-sm);
-    color: var(--color-gray-500);
+    color: var(--color-on-light-muted);
 }
 
 .profile-info i {

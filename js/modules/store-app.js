@@ -113,6 +113,55 @@ let heroCarouselTimer = null;
 let heroSlides = [];
 let heroIndex = 0;
 let heroControlsBound = false;
+let heroLoadingTimeout = null;
+
+function setHeroLoading(isLoading) {
+    const section = document.querySelector('.hero-section');
+    const loader = getElement('hero-loading');
+
+    if (section) {
+        section.classList.toggle('is-loading', isLoading);
+    }
+
+    if (loader) {
+        loader.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+        loader.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+    }
+}
+
+function startHeroLoading() {
+    setHeroLoading(true);
+
+    if (heroLoadingTimeout) {
+        clearTimeout(heroLoadingTimeout);
+    }
+
+    // Fallback para não ficar preso no loading
+    heroLoadingTimeout = setTimeout(() => {
+        setHeroLoading(false);
+    }, 6000);
+}
+
+function stopHeroLoading() {
+    if (heroLoadingTimeout) {
+        clearTimeout(heroLoadingTimeout);
+        heroLoadingTimeout = null;
+    }
+
+    setHeroLoading(false);
+}
+
+function preloadHeroImage(imageUrl) {
+    if (!imageUrl) {
+        stopHeroLoading();
+        return;
+    }
+
+    const img = new Image();
+    img.onload = () => stopHeroLoading();
+    img.onerror = () => stopHeroLoading();
+    img.src = imageUrl;
+}
 
 /**
  * Initialize store application
@@ -158,6 +207,7 @@ function handleCartChange(cartItems) {
  */
 async function loadProducts() {
     showProductsLoading();
+    startHeroLoading();
 
     try {
         allProducts = await getAllProducts(true); // Active only
@@ -186,6 +236,7 @@ async function loadProducts() {
     } catch (error) {
         console.error('Error loading products:', error);
         showToast(ERROR_MESSAGES.ORDER.LOAD_FAILED, TOAST_TYPES.ERROR);
+        stopHeroLoading();
     }
 }
 
@@ -207,7 +258,10 @@ function renderProductsWithHandlers(products) {
  */
 function initHeroCarousel(products) {
     const track = getElement('hero-carousel-track');
-    if (!track) return;
+    if (!track) {
+        stopHeroLoading();
+        return;
+    }
 
     bindHeroControls();
 
@@ -227,6 +281,7 @@ function initHeroCarousel(products) {
         heroSlides = [];
         heroIndex = 0;
         stopHeroCarousel();
+        stopHeroLoading();
         return;
     }
 
@@ -248,6 +303,9 @@ function initHeroCarousel(products) {
         </div>
     `;
     }).join('');
+
+    const firstImageUrl = slidesData[0]?.imageUrl || slidesData[0]?.imagem;
+    preloadHeroImage(firstImageUrl);
 
     heroSlides = Array.from(track.querySelectorAll('.hero-slide'));
     heroIndex = 0;

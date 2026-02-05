@@ -78,6 +78,13 @@ select:focus {
     box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
 }
 
+input:disabled,
+textarea:disabled,
+select:disabled {
+    color: var(--color-input-text);
+    opacity: 1;
+}
+
 /* Checkout Form */
 .checkout-form .form-row {
     display: flex;

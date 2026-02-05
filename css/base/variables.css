@@ -44,6 +44,10 @@
     --color-gray-800: #2e2e2e;
     --color-gray-900: #2e2e2e;
 
+    /* Text on light surfaces (modals/cards/dropdowns) */
+    --color-on-light-strong: #3a3a3a;
+    --color-on-light-muted: #5a5a5a;
+
     /* Form Inputs */
     --color-input-text: var(--color-gray-900);
     --color-input-placeholder: var(--color-gray-500);
