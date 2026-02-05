@@ -29,6 +29,7 @@
                 <button class="tab-btn" onclick="showTab('lista_geral', event)">Chat Geral</button>
                 <button class="tab-btn" onclick="showTab('users', event)">Usuários</button>
                 <button class="tab-btn produtos-tab-btn" onclick="showTab('produtos', event)">Produtos</button>
+                <button class="tab-btn" onclick="showTab('banners', event)">Banners</button>
             </div>
 
             <!-- Tab Eventos -->
@@ -157,6 +158,20 @@
                     </select>
                 </div>
                 <div id="produtos-list" class="produtos-grid"></div>
+            </div>
+
+            <!-- Tab Banners -->
+            <!-- Campos Firebase: imageUrl, storagePath, originalName, createdAt -->
+            <div id="banners-tab" class="tab-content">
+                <h2>Gerenciar Banners</h2>
+                <div class="form-section">
+                    <div class="banner-upload">
+                        <input type="file" id="banner-files" accept="image/*" multiple>
+                        <button onclick="addBanners()">Adicionar Banners</button>
+                    </div>
+                    <div class="banner-preview" id="banner-preview"></div>
+                </div>
+                <div id="banners-list" class="items-list banner-grid"></div>
             </div>
 
             <div class="logout-section">

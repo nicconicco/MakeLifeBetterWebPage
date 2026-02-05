@@ -15,3 +15,4 @@ export * from './event-location.service.js';
 export * from './duvida.service.js';
 export * from './chat.service.js';
 export * from './user.service.js';
+export * from './banner.service.js';

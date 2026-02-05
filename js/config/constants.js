@@ -11,7 +11,8 @@ export const COLLECTIONS = {
     EVENTS: 'eventos',
     EVENT_LOCATIONS: 'event_location',
     QUESTIONS: 'duvidas',
-    CHAT: 'lista_geral'
+    CHAT: 'lista_geral',
+    BANNERS: 'banners'
 };
 
 // Admin Emails

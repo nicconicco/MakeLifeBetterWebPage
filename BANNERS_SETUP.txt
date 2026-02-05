@@ -1,0 +1,48 @@
+Resumo da configuracao de banners (Firebase)
+==========================================
+
+Objetivo
+- Permitir upload de imagens de banner no admin.
+- Salvar metadados dos banners no Firestore.
+- Exibir banners no hero da loja; se nao existir banner, usar produtos.
+
+O que foi necessario fazer
+1) Firebase Storage
+- Confirmar o bucket correto: makelifebetter-7f3c9.firebasestorage.app
+- Garantir que o Storage esteja ativo no console.
+- Ajustar o config do projeto para usar o bucket correto:
+  storageBucket: "makelifebetter-7f3c9.firebasestorage.app"
+
+2) Regras do Firestore (Database Rules)
+- Permitir gravar documentos na colecao "banners":
+
+  match /banners/{bannerId} {
+    allow read: if true;
+    allow write: if request.auth != null;
+  }
+
+3) Regras do Storage
+- Permitir upload de arquivos em /banners/ para usuarios autenticados:
+
+  rules_version = '2';
+  service firebase.storage {
+    match /b/{bucket}/o {
+      match /banners/{allPaths=**} {
+        allow read: if true;
+        allow write: if request.auth != null;
+      }
+    }
+  }
+
+Como funciona no sistema
+- Admin envia imagens pelo painel "Banners".
+- O arquivo sobe no Storage (pasta /banners).
+- O Firestore grava um documento em /banners com:
+  imageUrl, storagePath, originalName, createdAt.
+- A loja carrega banners; se nao houver, usa imagens de produtos no hero.
+
+Se ocorrer erro novamente
+- "Missing or insufficient permissions" => regra do Firestore para /banners.
+- 404 no Storage => bucket errado ou Storage nao iniciado.
+- CORS/OPTIONS => bucket incorreto ou Storage nao provisionado.
+

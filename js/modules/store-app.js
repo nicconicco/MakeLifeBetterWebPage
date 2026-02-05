@@ -24,6 +24,7 @@ import {
     filterProducts,
     getEffectivePrice
 } from '../services/product.service.js';
+import { getAllBanners } from '../services/banner.service.js';
 
 import {
     initCart,
@@ -160,13 +161,26 @@ async function loadProducts() {
     try {
         allProducts = await getAllProducts(true); // Active only
         categories = extractCategories(allProducts);
+        let banners = [];
+        try {
+            banners = await getAllBanners();
+        } catch (error) {
+            console.warn('Nao foi possivel carregar banners:', error);
+        }
 
         // Update UI
         updateStoreStats(allProducts.length, categories.size);
         updateCategoryDropdown(categories);
         renderCategories(categories, handleCategoryFilter);
         renderProductsWithHandlers(allProducts);
-        initHeroCarousel(allProducts);
+        const bannerItems = banners.filter(banner => banner?.imageUrl);
+        const heroItems = bannerItems.length > 0
+            ? bannerItems.map(banner => ({
+                imageUrl: banner.imageUrl,
+                nome: banner.originalName || 'Banner'
+            }))
+            : allProducts;
+        initHeroCarousel(heroItems);
 
     } catch (error) {
         console.error('Error loading products:', error);
@@ -197,7 +211,9 @@ function initHeroCarousel(products) {
     bindHeroControls();
 
     const carousel = track.parentElement;
-    const slidesData = (products || []).filter(product => product.imagem).slice(0, 8);
+    const slidesData = (products || [])
+        .filter(item => item?.imageUrl || item?.imagem)
+        .slice(0, 8);
 
     if (carousel) {
         carousel.classList.toggle('is-empty', slidesData.length === 0);
@@ -220,13 +236,17 @@ function initHeroCarousel(products) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 
-    track.innerHTML = slidesData.map((product, index) => `
+    track.innerHTML = slidesData.map((item, index) => {
+        const imageUrl = item.imageUrl || item.imagem;
+        const label = item.nome || item.titulo || item.originalName || 'Banner';
+        return `
         <div class="hero-slide${index === 0 ? ' is-active' : ''}"
              role="img"
-             aria-label="${escapeHtml(product.nome || 'Produto')}"
-             style="background-image: url('${escapeHtml(product.imagem)}');">
+             aria-label="${escapeHtml(label)}"
+             style="background-image: url('${escapeHtml(imageUrl)}');">
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     heroSlides = Array.from(track.querySelectorAll('.hero-slide'));
     heroIndex = 0;

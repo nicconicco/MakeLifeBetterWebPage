@@ -39,6 +39,11 @@ import {
     popularProdutosExemplo,
     deletarTodosProdutos
 } from './admin-produtos.js';
+import {
+    initBannerForm,
+    loadBanners,
+    addBanners
+} from './admin-banners.js';
 
 /**
  * Load data for current tab
@@ -63,6 +68,9 @@ function loadCurrentTabData(tabName) {
             break;
         case 'produtos':
             loadProdutos();
+            break;
+        case 'banners':
+            loadBanners();
             break;
     }
 }
@@ -123,6 +131,9 @@ function exposeGlobalFunctions() {
     window.popularProdutosExemplo = popularProdutosExemplo;
     window.deletarTodosProdutos = deletarTodosProdutos;
 
+    // Banners
+    window.addBanners = addBanners;
+
     // Generic delete (for backwards compatibility)
     window.deleteItem = async function(collectionName, itemId) {
         if (!confirm('Tem certeza que deseja deletar este item?')) return;
@@ -165,6 +176,7 @@ export function initAdminApp() {
 
     // Initialize product form listeners
     initProdutoForm();
+    initBannerForm();
 
     // Expose global functions
     exposeGlobalFunctions();
