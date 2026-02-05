@@ -17,63 +17,63 @@ let categoriasSet = new Set();
 // Sample products data
 const produtosExemplo = [
     {
-        nome: "Smartphone Galaxy Pro",
-        descricao: "Smartphone de ultima geracao com camera de 108MP, tela AMOLED de 6.7 polegadas e bateria de 5000mAh.",
-        preco: 2499.99,
-        precoPromocional: 1999.99,
-        imagem: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
-        categoria: "Eletronicos",
-        estoque: 50,
+        nome: "Bera Aurora Lager 355ml",
+        descricao: "Lager leve e refrescante, notas de pao e final seco. Ideal para dias quentes.",
+        preco: 12.90,
+        precoPromocional: 9.90,
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/208223082/pilsen1-uexpcw.jpg",
+        categoria: "LAGER",
+        estoque: 80,
         ativo: true
     },
     {
-        nome: "Notebook UltraBook 15",
-        descricao: "Notebook ultrafino com processador Intel Core i7, 16GB RAM e SSD de 512GB.",
-        preco: 4999.99,
+        nome: "Bera Maracuja Solar IPA 473ml",
+        descricao: "IPA aromatica com lupulos citricos e tropicais, amargor medio e final resinoso.",
+        preco: 24.90,
+        precoPromocional: 21.90,
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/208210311/allday-ekjolp.jpg",
+        categoria: "IPA",
+        estoque: 60,
+        ativo: true
+    },
+    {
+        nome: "Bera Noite de Cacau Stout 473ml",
+        descricao: "Stout cremosa com notas de cafe, cacau e leve tostado. Corpo medio e espuma persistente.",
+        preco: 26.90,
         precoPromocional: null,
-        imagem: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
-        categoria: "Eletronicos",
-        estoque: 25,
-        ativo: true
-    },
-    {
-        nome: "Fone de Ouvido Bluetooth Premium",
-        descricao: "Fone sem fio com cancelamento de ruido ativo, 30 horas de bateria e som Hi-Fi.",
-        preco: 599.99,
-        precoPromocional: 449.99,
-        imagem: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
-        categoria: "Acessorios",
-        estoque: 100,
-        ativo: true
-    },
-    {
-        nome: "Camiseta Basica Algodao",
-        descricao: "Camiseta 100% algodao, confortavel e duravel. Disponivel em varias cores.",
-        preco: 79.99,
-        precoPromocional: null,
-        imagem: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
-        categoria: "Roupas",
-        estoque: 200,
-        ativo: true
-    },
-    {
-        nome: "Tenis Esportivo Runner",
-        descricao: "Tenis para corrida com tecnologia de amortecimento, leve e respiravel.",
-        preco: 399.99,
-        precoPromocional: 299.99,
-        imagem: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
-        categoria: "Calcados",
-        estoque: 75,
-        ativo: true
-    },
-    {
-        nome: "Relogio Smartwatch Fit",
-        descricao: "Smartwatch com monitor cardiaco, GPS integrado e resistencia a agua.",
-        preco: 899.99,
-        precoPromocional: 699.99,
-        imagem: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
-        categoria: "Acessorios",
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/208210333/dry-stout-cnxnjv.jpg",
+        categoria: "ESCURAS",
         estoque: 40,
+        ativo: true
+    },
+    {
+        nome: "Bera Trigo Dourado Weiss 500ml",
+        descricao: "Weiss classica com notas de banana e cravo, corpo macio e final levemente adocicado.",
+        preco: 19.90,
+        precoPromocional: 16.90,
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/208210521/moooo-pcdymv.jpg",
+        categoria: "WEISS / WIT",
+        estoque: 55,
+        ativo: true
+    },
+    {
+        nome: "Bera Frutas Vermelhas Sour 473ml",
+        descricao: "Sour com acidez equilibrada, frutas vermelhas e final super refrescante.",
+        preco: 27.90,
+        precoPromocional: 23.90,
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/208210160/swamp1-vmrmwz.jpg",
+        categoria: "SOUR / B WEISSE",
+        estoque: 35,
+        ativo: true
+    },
+    {
+        nome: "Bera Mosteiro Belgian Blond 500ml",
+        descricao: "Belgian Blond com esteres frutados, especiarias sutis e calor alcoolico suave.",
+        preco: 29.90,
+        precoPromocional: null,
+        imagem: "https://cdn.awsli.com.br/300x300/2272/2272022/produto/220455274/bock2-ubilzqbc14.png",
+        categoria: "BELGAS",
+        estoque: 30,
         ativo: true
     }
 ];
