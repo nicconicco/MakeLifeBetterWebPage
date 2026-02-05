@@ -184,14 +184,30 @@
 /* Responsive */
 @media (max-width: 768px) {
     .header-container {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "logo actions"
+            "nav nav";
+        align-items: center;
         height: auto;
         padding: var(--spacing-lg) 0;
         gap: var(--spacing-lg);
     }
 
+    .logo {
+        grid-area: logo;
+    }
+
+    .header-actions {
+        grid-area: actions;
+        justify-self: end;
+        gap: var(--spacing-md);
+        flex-wrap: nowrap;
+    }
+
     .header-nav {
-        order: 3;
+        grid-area: nav;
         width: 100%;
         justify-content: center;
     }
@@ -201,6 +217,18 @@
     }
 
     .user-name {
+        display: none;
+    }
+
+    .user-menu {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .login-btn {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .login-btn span {
         display: none;
     }
 

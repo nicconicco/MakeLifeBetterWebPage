@@ -5,7 +5,8 @@
 .hero-section {
     position: relative;
     background: var(--color-accent-gradient);
-    padding: 80px var(--spacing-xl);
+    min-height: clamp(320px, 60vh, 520px);
+    padding: clamp(40px, 8vh, 80px) var(--spacing-xl);
     text-align: center;
     overflow: hidden;
 }
@@ -166,6 +167,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .hero-section {
+        min-height: clamp(260px, 55vh, 420px);
+        padding: clamp(32px, 6vh, 60px) var(--spacing-lg);
+    }
+
     .hero-content h2 {
         font-size: 2rem;
     }
@@ -189,6 +195,13 @@
 
     .hero-control--next {
         right: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        min-height: clamp(240px, 50vh, 360px);
+        padding: clamp(28px, 5vh, 50px) var(--spacing-md);
     }
 }
 
