@@ -5,20 +5,24 @@
 
 :root {
     /* Colors - Primary */
-    --color-primary: #4CAF50;
-    --color-primary-light: #2ecc71;
-    --color-primary-dark: #388E3C;
-    --color-primary-gradient: linear-gradient(135deg, #4CAF50, #2ecc71);
+    --color-primary: #f2c200;
+    --color-primary-light: #f7d861;
+    --color-primary-dark: #c79c00;
+    --color-primary-gradient: linear-gradient(135deg, #f2c200, #d9a900);
 
     /* Colors - Secondary */
-    --color-secondary: #1a1a2e;
-    --color-secondary-light: #16213e;
-    --color-secondary-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --color-secondary: #1f3b34;
+    --color-secondary-light: #264841;
+    --color-secondary-gradient: linear-gradient(135deg, #1f3b34 0%, #162f29 100%);
 
     /* Colors - Accent */
-    --color-accent: #667eea;
-    --color-accent-light: #764ba2;
-    --color-accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --color-accent: #5a4e6e;
+    --color-accent-light: #6b5a83;
+    --color-accent-dark: #4a425c;
+    --color-accent-gradient: linear-gradient(135deg, #5a4e6e 0%, #4a425c 100%);
+
+    /* Colors - Info (brand) */
+    --color-info-brand: #73c8c6;
 
     /* Colors - Status */
     --color-success: #4CAF50;
@@ -29,16 +33,16 @@
     /* Colors - Neutral */
     --color-white: #ffffff;
     --color-black: #000000;
-    --color-gray-50: #f8f9fa;
-    --color-gray-100: #f5f7fa;
-    --color-gray-200: #e8e8e8;
-    --color-gray-300: #ddd;
-    --color-gray-400: #ccc;
-    --color-gray-500: #999;
-    --color-gray-600: #666;
-    --color-gray-700: #555;
-    --color-gray-800: #333;
-    --color-gray-900: #1a1a2e;
+    --color-gray-50: #f7f7f7;
+    --color-gray-100: #e6e6e6;
+    --color-gray-200: #d6d6d6;
+    --color-gray-300: #c4c4c4;
+    --color-gray-400: #9e9e9e;
+    --color-gray-500: #4a4a4a;
+    --color-gray-600: #353535;
+    --color-gray-700: #2e2e2e;
+    --color-gray-800: #2e2e2e;
+    --color-gray-900: #2e2e2e;
 
     /* Typography */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

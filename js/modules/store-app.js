@@ -108,6 +108,10 @@ import {
 let allProducts = [];
 let categories = new Set();
 let isRegisterMode = false;
+let heroCarouselTimer = null;
+let heroSlides = [];
+let heroIndex = 0;
+let heroControlsBound = false;
 
 /**
  * Initialize store application
@@ -162,6 +166,7 @@ async function loadProducts() {
         updateCategoryDropdown(categories);
         renderCategories(categories, handleCategoryFilter);
         renderProductsWithHandlers(allProducts);
+        initHeroCarousel(allProducts);
 
     } catch (error) {
         console.error('Error loading products:', error);
@@ -179,6 +184,151 @@ function renderProductsWithHandlers(products) {
         onQuickAdd: handleQuickAdd,
         onWishlist: handleWishlist
     });
+}
+
+/**
+ * Initialize hero carousel with product images
+ * @param {Array} products - Products array
+ */
+function initHeroCarousel(products) {
+    const track = getElement('hero-carousel-track');
+    if (!track) return;
+
+    bindHeroControls();
+
+    const carousel = track.parentElement;
+    const slidesData = (products || []).filter(product => product.imagem).slice(0, 8);
+
+    if (carousel) {
+        carousel.classList.toggle('is-empty', slidesData.length === 0);
+    }
+
+    toggleHeroControls(slidesData.length > 1);
+
+    if (slidesData.length === 0) {
+        track.innerHTML = '';
+        heroSlides = [];
+        heroIndex = 0;
+        stopHeroCarousel();
+        return;
+    }
+
+    const escapeHtml = (value = '') => String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    track.innerHTML = slidesData.map((product, index) => `
+        <div class="hero-slide${index === 0 ? ' is-active' : ''}"
+             role="img"
+             aria-label="${escapeHtml(product.nome || 'Produto')}"
+             style="background-image: url('${escapeHtml(product.imagem)}');">
+        </div>
+    `).join('');
+
+    heroSlides = Array.from(track.querySelectorAll('.hero-slide'));
+    heroIndex = 0;
+
+    if (heroSlides.length < 2) {
+        toggleHeroControls(false);
+        stopHeroCarousel();
+        return;
+    }
+
+    startHeroCarousel();
+}
+
+function bindHeroControls() {
+    if (heroControlsBound) return;
+
+    const prevBtn = getElement('hero-carousel-prev');
+    const nextBtn = getElement('hero-carousel-next');
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            advanceHeroSlide(-1);
+            restartHeroCarousel();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            advanceHeroSlide(1);
+            restartHeroCarousel();
+        });
+    }
+
+    heroControlsBound = true;
+}
+
+function toggleHeroControls(show) {
+    const prevBtn = getElement('hero-carousel-prev');
+    const nextBtn = getElement('hero-carousel-next');
+    if (prevBtn) prevBtn.classList.toggle('is-hidden', !show);
+    if (nextBtn) nextBtn.classList.toggle('is-hidden', !show);
+}
+
+function startHeroCarousel() {
+    stopHeroCarousel();
+
+    if (heroSlides.length < 2) return;
+
+    heroCarouselTimer = setInterval(() => {
+        advanceHeroSlide(1);
+    }, 5000);
+}
+
+function stopHeroCarousel() {
+    if (heroCarouselTimer) {
+        clearInterval(heroCarouselTimer);
+        heroCarouselTimer = null;
+    }
+}
+
+function restartHeroCarousel() {
+    startHeroCarousel();
+}
+
+function advanceHeroSlide(step) {
+    if (heroSlides.length < 2) return;
+
+    const nextIndex = (heroIndex + step + heroSlides.length) % heroSlides.length;
+    const current = heroSlides[heroIndex];
+    const next = heroSlides[nextIndex];
+
+    if (!current || !next || current === next) return;
+
+    heroSlides.forEach(slide => slide.classList.remove('is-prev', 'is-next'));
+
+    if (step < 0) {
+        next.classList.add('is-next');
+        void next.offsetWidth;
+    }
+
+    current.classList.remove('is-active');
+
+    if (step > 0) {
+        current.classList.add('is-prev');
+    }
+
+    next.classList.add('is-active');
+
+    const cleanup = () => {
+        current.classList.remove('is-prev');
+        next.classList.remove('is-next');
+        next.removeEventListener('transitionend', cleanup);
+        clearTimeout(fallbackTimer);
+    };
+
+    const fallbackTimer = setTimeout(() => {
+        current.classList.remove('is-prev');
+        next.classList.remove('is-next');
+    }, 950);
+
+    next.addEventListener('transitionend', cleanup);
+    heroIndex = nextIndex;
 }
 
 /**
