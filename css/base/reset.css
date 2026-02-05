@@ -53,6 +53,13 @@ button {
 input, textarea, select {
     font-family: inherit;
     font-size: inherit;
+    color: var(--color-input-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-input-placeholder);
+    opacity: 1;
 }
 
 /* Scrollbar Styling */

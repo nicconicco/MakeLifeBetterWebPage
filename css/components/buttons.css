@@ -196,6 +196,30 @@
     box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
 }
 
+/* Theme Toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: rgba(255,255,255,0.12);
+    color: var(--color-white);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.theme-toggle i {
+    font-size: 1rem;
+}
+
 /* Cart Button */
 .cart-btn {
     position: relative;

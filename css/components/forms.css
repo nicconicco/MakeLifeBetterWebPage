@@ -31,7 +31,7 @@
     left: 18px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-gray-500);
+    color: var(--color-input-icon);
     line-height: 1;
     pointer-events: none;
 }
@@ -44,6 +44,8 @@
     font-size: 0.95rem;
     transition: all var(--transition-normal);
     line-height: 1.2;
+    background: var(--color-input-bg);
+    color: var(--color-input-text);
 }
 
 .input-icon input:not([type="radio"]):not([type="checkbox"]):focus {
@@ -62,7 +64,8 @@ select {
     border-radius: var(--radius-lg);
     font-size: 0.95rem;
     transition: all var(--transition-normal);
-    background: var(--color-gray-50);
+    background: var(--color-input-bg);
+    color: var(--color-input-text);
 }
 
 input:focus,
@@ -70,7 +73,8 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--color-primary);
-    background: var(--color-white);
+    background: var(--color-input-bg-focus);
+    color: var(--color-input-text);
     box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
 }
 

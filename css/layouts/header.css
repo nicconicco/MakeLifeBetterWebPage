@@ -232,6 +232,14 @@
         display: none;
     }
 
+    .theme-toggle {
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    .theme-toggle-text {
+        display: none;
+    }
+
     .logo-text h1 {
         font-size: var(--font-size-xl);
     }

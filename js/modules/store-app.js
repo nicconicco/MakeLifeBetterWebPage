@@ -129,6 +129,7 @@ export function initStoreApp() {
     // Setup UI
     setupEventListeners();
     setupGlobalHandlers();
+    initThemeToggle();
 }
 
 /**
@@ -998,6 +999,51 @@ function setupGlobalHandlers() {
     });
 
     setupClickOutside('user-menu', 'user-dropdown');
+}
+
+function initThemeToggle() {
+    const toggle = getElement('theme-toggle');
+    if (!toggle) return;
+
+    const storedTheme = localStorage.getItem('mlb_theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = storedTheme || (prefersDark ? 'dark' : 'light');
+
+    applyTheme(initialTheme, false);
+
+    toggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || initialTheme;
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme, true);
+    });
+}
+
+function applyTheme(theme, persist) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (persist) {
+        localStorage.setItem('mlb_theme', theme);
+    }
+    updateThemeToggle(theme);
+}
+
+function updateThemeToggle(theme) {
+    const toggle = getElement('theme-toggle');
+    if (!toggle) return;
+
+    const icon = toggle.querySelector('i');
+    const label = toggle.querySelector('.theme-toggle-text');
+    const isDark = theme === 'dark';
+
+    if (icon) {
+        icon.classList.toggle('fa-moon', !isDark);
+        icon.classList.toggle('fa-sun', isDark);
+    }
+
+    if (label) {
+        label.textContent = isDark ? 'Claro' : 'Escuro';
+    }
+
+    toggle.setAttribute('aria-label', isDark ? 'Alternar para modo claro' : 'Alternar para modo escuro');
 }
 
 // ============================================
