@@ -54,9 +54,11 @@
     top: 50%;
     transform: translateY(-50%);
     color: var(--color-gray-500);
+    line-height: 1;
+    pointer-events: none;
 }
 
-.search-box input {
+.search-box input:not([type="radio"]):not([type="checkbox"]) {
     width: 100%;
     padding: 14px var(--spacing-xl) 14px 60px;
     border: 2px solid var(--color-gray-200);
@@ -64,9 +66,10 @@
     font-size: 0.95rem;
     transition: all var(--transition-normal);
     background: var(--color-gray-50);
+    line-height: 1.2;
 }
 
-.search-box input:focus {
+.search-box input:not([type="radio"]):not([type="checkbox"]):focus {
     outline: none;
     border-color: var(--color-primary);
     background: var(--color-white);

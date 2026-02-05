@@ -32,18 +32,21 @@
     top: 50%;
     transform: translateY(-50%);
     color: var(--color-gray-500);
+    line-height: 1;
+    pointer-events: none;
 }
 
-.input-icon input {
+.input-icon input:not([type="radio"]):not([type="checkbox"]) {
     width: 100%;
     padding: 14px 15px 14px 56px;
     border: 2px solid var(--color-gray-200);
     border-radius: var(--radius-xl);
     font-size: 0.95rem;
     transition: all var(--transition-normal);
+    line-height: 1.2;
 }
 
-.input-icon input:focus {
+.input-icon input:not([type="radio"]):not([type="checkbox"]):focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
