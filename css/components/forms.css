@@ -28,7 +28,7 @@
 
 .input-icon i {
     position: absolute;
-    left: 15px;
+    left: 18px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--color-gray-500);
@@ -36,7 +36,7 @@
 
 .input-icon input {
     width: 100%;
-    padding: 14px 15px 14px 45px;
+    padding: 14px 15px 14px 56px;
     border: 2px solid var(--color-gray-200);
     border-radius: var(--radius-xl);
     font-size: 0.95rem;

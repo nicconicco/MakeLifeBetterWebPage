@@ -50,7 +50,7 @@
 
 .search-box i {
     position: absolute;
-    left: 18px;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
     color: var(--color-gray-500);
@@ -58,7 +58,7 @@
 
 .search-box input {
     width: 100%;
-    padding: 14px var(--spacing-xl) 14px 50px;
+    padding: 14px var(--spacing-xl) 14px 60px;
     border: 2px solid var(--color-gray-200);
     border-radius: var(--radius-xl);
     font-size: 0.95rem;
