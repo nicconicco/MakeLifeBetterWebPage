@@ -1,0 +1,58 @@
+/**
+ * Trust Section Styles
+ */
+
+.trust-section {
+    background: var(--color-white);
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.trust-card {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.trust-card i {
+    font-size: 1.6rem;
+    color: var(--color-primary);
+    margin-top: 2px;
+}
+
+.trust-card h4 {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-900);
+    margin-bottom: 6px;
+}
+
+.trust-card p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    line-height: var(--line-height-normal);
+}
+
+.trust-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+    .trust-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

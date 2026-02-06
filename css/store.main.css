@@ -22,8 +22,10 @@
 /* Pages */
 @import url('./components/hero.css');
 @import url('./components/products.css');
+@import url('./components/trust.css');
 @import url('./components/cart.css');
 @import url('./components/checkout.css');
 @import url('./components/orders.css');
 @import url('./components/auth.css');
 @import url('./components/profile.css');
+@import url('./components/content.css');
