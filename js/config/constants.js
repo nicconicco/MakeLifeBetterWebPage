@@ -61,6 +61,15 @@ export const PAYMENT_METHOD_LABELS = {
     [PAYMENT_METHODS.BOLETO]: 'Boleto Bancario'
 };
 
+// Payment Provider (mock or pagbank)
+export const PAYMENT_PROVIDERS = {
+    MOCK: 'mock',
+    PAGBANK: 'pagbank'
+};
+
+// Default provider (use mock until PagBank is configured)
+export const ACTIVE_PAYMENT_PROVIDER = PAYMENT_PROVIDERS.MOCK;
+
 // Shipping Options
 export const SHIPPING_OPTIONS = {
     NORMAL: { type: 'normal', price: 15.90, time: '5-8 dias', label: 'Normal' },

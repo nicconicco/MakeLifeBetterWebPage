@@ -38,11 +38,8 @@ import {
     isCartEmpty
 } from '../services/cart.service.js';
 
-import {
-    createOrder,
-    buildOrderData,
-    getOrdersByUserId
-} from '../services/order.service.js';
+import { createOrder, buildOrderData, getOrdersByUserId, getOrderById } from '../services/order.service.js';
+import { createPagBankCheckout } from '../services/payment.service.js';
 
 // Modules
 import {
@@ -64,7 +61,6 @@ import {
     initCheckout,
     openCheckoutModal,
     closeCheckoutModal,
-    showStep,
     goToPaymentStep,
     goToAddressStep,
     selectShipping,
@@ -72,8 +68,7 @@ import {
     updateOrderSummary,
     validatePaymentForm,
     getCheckoutFormData,
-    displayOrderConfirmation,
-    getSelectedShipping
+    displayOrderConfirmation
 } from './checkout.js';
 
 // Utils
@@ -90,6 +85,7 @@ import {
 
 import {
     formatDate,
+    formatCurrency,
     formatCEP,
     formatCardNumber,
     formatCardExpiry
@@ -100,7 +96,9 @@ import {
     SUCCESS_MESSAGES,
     ERROR_MESSAGES,
     ORDER_STATUS_LABELS,
-    TOAST_TYPES
+    TOAST_TYPES,
+    ACTIVE_PAYMENT_PROVIDER,
+    PAYMENT_PROVIDERS
 } from '../config/constants.js';
 
 /**
@@ -114,6 +112,8 @@ let heroSlides = [];
 let heroIndex = 0;
 let heroControlsBound = false;
 let heroLoadingTimeout = null;
+let pendingReturnOrderId = null;
+let isProcessingPayment = false;
 
 function setHeroLoading(isLoading) {
     const section = document.querySelector('.hero-section');
@@ -179,6 +179,9 @@ export function initStoreApp() {
     setupEventListeners();
     setupGlobalHandlers();
     initThemeToggle();
+    updateCheckoutNote();
+
+    pendingReturnOrderId = getPendingOrderIdFromReturn();
 }
 
 /**
@@ -189,8 +192,70 @@ export function initStoreApp() {
 function handleAuthStateChange(user, userData) {
     if (user) {
         updateUIForLoggedUser(userData);
+        if (pendingReturnOrderId) {
+            showOrderReturn(pendingReturnOrderId);
+        }
     } else {
         updateUIForGuest();
+        if (pendingReturnOrderId) {
+            showLoginModal();
+            showToast('Faca login para visualizar seu pedido.', TOAST_TYPES.INFO);
+        }
+    }
+}
+
+function updateCheckoutNote() {
+    const noteText = getElement('checkout-note-text');
+    if (!noteText) return;
+
+    if (ACTIVE_PAYMENT_PROVIDER === PAYMENT_PROVIDERS.MOCK) {
+        noteText.textContent = 'Pagamento em modo teste. Nenhuma cobranca real sera feita.';
+        return;
+    }
+
+    noteText.textContent = 'Voce sera redirecionado ao PagBank para concluir o pagamento com seguranca.';
+}
+
+function setPaymentButtonLoading(isLoading) {
+    const btn = getElement('checkout-pay-btn');
+    if (!btn) return;
+
+    btn.disabled = isLoading;
+    btn.innerHTML = isLoading
+        ? '<i class="fas fa-spinner fa-spin"></i><span>Processando...</span>'
+        : '<i class="fas fa-lock"></i><span>Confirmar Pagamento</span>';
+}
+
+function getPendingOrderIdFromReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const orderIdFromUrl = params.get('order_id');
+
+    if (orderIdFromUrl) {
+        localStorage.setItem('mlb_pending_order_id', orderIdFromUrl);
+        params.delete('order_id');
+        const newUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ''}`;
+        window.history.replaceState({}, document.title, newUrl);
+        return orderIdFromUrl;
+    }
+
+    return localStorage.getItem('mlb_pending_order_id');
+}
+
+async function showOrderReturn(orderId) {
+    try {
+        const order = await getOrderById(orderId);
+        if (order) {
+            openCheckoutModal();
+            displayOrderConfirmation(order);
+        } else {
+            showToast('Pedido criado. Aguardando confirmacao do pagamento.', TOAST_TYPES.INFO);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar pedido:', error);
+        showToast('Nao foi possivel carregar o pedido.', TOAST_TYPES.ERROR);
+    } finally {
+        pendingReturnOrderId = null;
+        localStorage.removeItem('mlb_pending_order_id');
     }
 }
 
@@ -659,40 +724,93 @@ export function goToCheckout() {
  * Process payment
  */
 export async function processPayment() {
+    if (isProcessingPayment) {
+        return;
+    }
+
     if (!validatePaymentForm()) {
         return;
     }
 
-    showToast('Processando pagamento...', TOAST_TYPES.INFO);
-
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Create order
-    const user = getCurrentUser();
-    const formData = getCheckoutFormData();
-    const cartItems = getCartItems();
-    const subtotal = getCartSubtotal();
-
-    const orderData = buildOrderData({
-        userId: user.uid,
-        userEmail: user.email,
-        cartItems,
-        address: formData.address,
-        shipping: formData.shipping,
-        payment: formData.payment,
-        subtotal,
-        shippingCost: formData.shipping.price
-    });
+    isProcessingPayment = true;
+    setPaymentButtonLoading(true);
 
     try {
-        const order = await createOrder(orderData);
-        displayOrderConfirmation(order);
-        clearCart();
-        showToast('Pedido realizado com sucesso!', TOAST_TYPES.SUCCESS);
+        const user = getCurrentUser();
+        if (!user) {
+            showLoginModal();
+            isProcessingPayment = false;
+            setPaymentButtonLoading(false);
+            return;
+        }
+
+        const formData = getCheckoutFormData();
+        const cartItems = getCartItems();
+        if (ACTIVE_PAYMENT_PROVIDER === PAYMENT_PROVIDERS.MOCK) {
+            showToast('Processando pagamento (modo teste)...', TOAST_TYPES.INFO);
+
+            // Simulate payment processing
+            await new Promise(resolve => setTimeout(resolve, 1200));
+
+            const subtotal = getCartSubtotal();
+
+            const orderData = buildOrderData({
+                userId: user.uid,
+                userEmail: user.email,
+                cartItems,
+                address: formData.address,
+                shipping: formData.shipping,
+                payment: formData.payment,
+                subtotal,
+                shippingCost: formData.shipping.price
+            });
+
+            const order = await createOrder(orderData);
+            displayOrderConfirmation(order);
+            clearCart();
+            showToast('Pedido realizado com sucesso!', TOAST_TYPES.SUCCESS);
+            isProcessingPayment = false;
+            setPaymentButtonLoading(false);
+            return;
+        }
+
+        showToast('Preparando checkout seguro...', TOAST_TYPES.INFO);
+
+        const idToken = await user.getIdToken();
+        const checkoutPayload = {
+            items: cartItems.map(item => ({
+                id: item.id,
+                quantity: item.quantity
+            })),
+            address: formData.address,
+            shippingType: formData.shipping?.type,
+            paymentMethod: formData.payment?.method,
+            installments: formData.payment?.installments
+        };
+
+        const checkout = await createPagBankCheckout(checkoutPayload, idToken);
+
+        if (checkout?.payLink) {
+            localStorage.setItem('mlb_pending_order_id', checkout.orderId);
+            showToast('Redirecionando para o PagBank...', TOAST_TYPES.INFO);
+            isProcessingPayment = false;
+            setPaymentButtonLoading(false);
+            window.location.href = checkout.payLink;
+            return;
+        }
+
+        showToast('Nao foi possivel iniciar o pagamento.', TOAST_TYPES.ERROR);
     } catch (error) {
-        console.error('Error creating order:', error);
-        showToast(ERROR_MESSAGES.ORDER.CREATE_FAILED, TOAST_TYPES.ERROR);
+        const errorLabel = ACTIVE_PAYMENT_PROVIDER === PAYMENT_PROVIDERS.MOCK
+            ? 'Error creating order:'
+            : 'Error creating PagBank checkout:';
+        console.error(errorLabel, error);
+        showToast(error.message || ERROR_MESSAGES.ORDER.CREATE_FAILED, TOAST_TYPES.ERROR);
+    } finally {
+        if (isProcessingPayment) {
+            isProcessingPayment = false;
+            setPaymentButtonLoading(false);
+        }
     }
 }
 
@@ -990,7 +1108,9 @@ function renderOrders(orders, container) {
         const orderNumber = order.id.substring(0, 8).toUpperCase();
         const date = formatDate(order.createdAt);
         const status = ORDER_STATUS_LABELS[order.status] || ORDER_STATUS_LABELS.pending;
-        const itemsCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+        const items = Array.isArray(order.items) ? order.items : [];
+        const itemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
+        const totalFormatted = formatCurrency(order.total || 0);
 
         return `
             <div class="order-card">
@@ -1002,13 +1122,13 @@ function renderOrders(orders, container) {
                     <span class="status-badge ${status.class}">${status.label}</span>
                 </div>
                 <div class="order-items-preview">
-                    ${order.items.slice(0, 3).map(item =>
+                    ${items.slice(0, 3).map(item =>
                         `<span class="order-item-name">${item.quantity}x ${item.nome}</span>`
                     ).join('')}
-                    ${order.items.length > 3 ? `<span class="more-items">+${order.items.length - 3} itens</span>` : ''}
+                    ${items.length > 3 ? `<span class="more-items">+${items.length - 3} itens</span>` : ''}
                 </div>
                 <div class="order-footer">
-                    <span class="order-total">Total: R$ ${order.total.toFixed(2)}</span>
+                    <span class="order-total">Total: ${totalFormatted}</span>
                     <span class="order-items-count">${itemsCount} ${itemsCount === 1 ? 'item' : 'itens'}</span>
                 </div>
             </div>

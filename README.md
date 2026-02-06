@@ -1,36 +1,47 @@
-# MakeLifeBetter - Plataforma de E-commerce e Eventos
+# MakeLifeBetterWebPage — GitHub Pages
 
-## Português
+Plataforma web que combina e-commerce, eventos e comunidade, pronta para publicação via GitHub Pages.
 
-### Sobre o Projeto
+## Demo
 
-MakeLifeBetter é uma plataforma web completa que combina e-commerce com gerenciamento de eventos e funcionalidades de comunidade. O sistema possui duas interfaces principais: uma loja virtual pública e um painel administrativo.
+Depois de publicar no GitHub Pages, o site ficará disponível em:
 
-### Funcionalidades
+- `https://nicconicco.github.io/MakeLifeBetterWebPage/`
+- Loja: `https://nicconicco.github.io/MakeLifeBetterWebPage/store.html`
 
-#### Loja Virtual (Público)
-- **Catálogo de Produtos**: Navegação por produtos com filtros por categoria
-- **Carrinho de Compras**: Adicionar/remover produtos com persistência local
-- **Checkout**: Múltiplas formas de pagamento (Cartão de Crédito, Débito, PIX, Boleto)
-- **Opções de Entrega**: Normal, Express e Entrega no Mesmo Dia
-- **Conta do Usuário**: Cadastro, login e histórico de pedidos
+Se o nome do repositório for diferente, ajuste a URL para `https://nicconicco.github.io/<nome-do-repo>/`.
 
-#### Painel Administrativo
-- **Gerenciamento de Produtos**: Criar, editar e excluir produtos com controle de estoque
-- **Gerenciamento de Eventos**: Criar e organizar eventos com categorias diversas
-- **Locais de Eventos**: Cadastro de locais com endereço e coordenadas
-- **Sistema de Dúvidas (Q&A)**: Perguntas e respostas com sistema de respostas aninhadas
-- **Chat Geral**: Comunicação em tempo real
-- **Gerenciamento de Usuários**: Administração de contas de usuários
+## Visão geral
 
-### Tecnologias Utilizadas
+O projeto possui duas interfaces principais:
+
+- **Loja virtual pública** (`store.html`)
+- **Painel administrativo** (`index.html`)
+
+## Funcionalidades
+
+**Loja (público)**
+- Catálogo com filtros por categoria
+- Carrinho com persistência local
+- Checkout com múltiplos meios de pagamento
+- Opções de entrega (normal, expressa e same-day)
+- Conta do usuário e histórico de pedidos
+
+**Painel administrativo**
+- Gestão de produtos e estoque
+- Gestão de eventos e categorias
+- Cadastro de locais com endereço e coordenadas
+- Q&A com respostas aninhadas
+- Chat geral em tempo real
+- Gestão de usuários
+
+## Tecnologias
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Backend**: Firebase (Firestore, Authentication, Storage)
-- **Bibliotecas**: Font Awesome, Google Fonts (Inter)
-- **Arquitetura**: Modular com separação de responsabilidades
+- **Bibliotecas**: Font Awesome, Google Fonts
 
-### Estrutura do Projeto
+## Estrutura do projeto
 
 ```
 MakeLifeBetterWebPage/
@@ -46,70 +57,40 @@ MakeLifeBetterWebPage/
 └── README.md
 ```
 
-### Como Executar
+## Publicar no GitHub Pages
+
+1. No GitHub, acesse **Settings → Pages**
+2. Em **Build and deployment**, selecione:
+   - **Source**: `Deploy from a branch`
+   - **Branch**: `main` e pasta `/ (root)`
+3. Salve e aguarde a publicação
+
+A página será publicada usando `index.html` como entrada principal.
+
+## Rodar localmente
 
 1. Clone o repositório
 2. Configure as credenciais do Firebase em `js/config/firebase.config.js`
-3. Abra `store.html` para acessar a loja ou `index.html` para o painel admin
+3. Abra `store.html` (loja) ou `index.html` (admin)
 4. Use um servidor local (ex: Live Server) para evitar problemas de CORS
 
----
+## PagBank (checkout real) — Cloud Functions
 
-## English
+Para pagamentos reais com PagBank, existe um backend em `functions/`:
 
-### About the Project
+1. Instale as dependências na pasta `functions`
+2. Configure variáveis de ambiente:
+   - `PAGBANK_TOKEN` (token privado da conta PagBank)
+   - `PAGBANK_ENV` (`sandbox` ou `production`)
+   - `STORE_BASE_URL` (ex: `https://seu-dominio.com`)
+   - `ALLOWED_ORIGINS` (opcional, lista separada por vírgula)
+   - `FUNCTIONS_BASE_URL` (opcional, se não usar o padrão do Firebase)
+3. Faça o deploy das Cloud Functions
 
-MakeLifeBetter is a complete web platform that combines e-commerce with event management and community features. The system has two main interfaces: a public online store and an administrative dashboard.
+No frontend, a chave `ACTIVE_PAYMENT_PROVIDER` em `js/config/constants.js` define o modo:
+- `mock`: checkout simulado (padrão)
+- `pagbank`: redireciona ao PagBank (requer backend configurado)
 
-### Features
+## Licença
 
-#### Online Store (Public)
-- **Product Catalog**: Browse products with category filters
-- **Shopping Cart**: Add/remove products with local persistence
-- **Checkout**: Multiple payment methods (Credit Card, Debit Card, PIX, Bank Slip)
-- **Delivery Options**: Normal, Express, and Same-Day Delivery
-- **User Account**: Registration, login, and order history
-
-#### Admin Dashboard
-- **Product Management**: Create, edit, and delete products with inventory control
-- **Event Management**: Create and organize events with various categories
-- **Event Locations**: Register locations with address and coordinates
-- **Q&A System**: Questions and answers with nested reply system
-- **General Chat**: Real-time communication
-- **User Management**: User account administration
-
-### Technologies Used
-
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Backend**: Firebase (Firestore, Authentication, Storage)
-- **Libraries**: Font Awesome, Google Fonts (Inter)
-- **Architecture**: Modular with separation of concerns
-
-### Project Structure
-
-```
-MakeLifeBetterWebPage/
-├── index.html          # Admin dashboard
-├── store.html          # Online store
-├── style.css           # Main styles
-├── css/                # Component-specific styles
-├── js/
-│   ├── config/         # Configuration (Firebase, constants)
-│   ├── services/       # Business logic (Auth, Products, Cart, etc.)
-│   ├── modules/        # UI modules
-│   └── utils/          # Helper functions
-└── README.md
-```
-
-### How to Run
-
-1. Clone the repository
-2. Configure Firebase credentials in `js/config/firebase.config.js`
-3. Open `store.html` to access the store or `index.html` for the admin panel
-4. Use a local server (e.g., Live Server) to avoid CORS issues
-
----
-
-## License
-
-This project is for educational and personal use.
+Este projeto é para uso educacional e pessoal.

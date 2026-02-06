@@ -3,7 +3,13 @@
  * Handles checkout flow and UI
  */
 
-import { SHIPPING_OPTIONS, PAYMENT_METHODS, PAYMENT_METHOD_LABELS } from '../config/constants.js';
+import {
+    SHIPPING_OPTIONS,
+    PAYMENT_METHODS,
+    PAYMENT_METHOD_LABELS,
+    ACTIVE_PAYMENT_PROVIDER,
+    PAYMENT_PROVIDERS
+} from '../config/constants.js';
 import { formatCurrency, formatDate, formatCEP, formatCardNumber, formatCardExpiry, generateOrderNumber } from '../utils/formatters.js';
 import { getElement, openModal, closeModal, showToast, setText } from '../utils/dom.js';
 import { calculateDeliveryDate } from '../services/order.service.js';
@@ -231,6 +237,11 @@ export function updateOrderSummary(cartItems) {
  * @returns {boolean} Is valid
  */
 export function validatePaymentForm() {
+    if (ACTIVE_PAYMENT_PROVIDER === PAYMENT_PROVIDERS.PAGBANK) {
+        // No PagBank redirect flow, os dados do pagamento sao coletados na pagina do PagBank.
+        return true;
+    }
+
     if (selectedPaymentMethod === PAYMENT_METHODS.CREDIT ||
         selectedPaymentMethod === PAYMENT_METHODS.DEBIT) {
         const cardNumber = getElement('card-number')?.value;
@@ -284,15 +295,19 @@ export function displayOrderConfirmation(order) {
     const orderNumber = generateOrderNumber(order.id);
     setText('order-number', `#${orderNumber}`);
 
-    setText('confirm-payment-method', PAYMENT_METHOD_LABELS[order.payment.method]);
+    const method = order.payment?.method || PAYMENT_METHODS.CREDIT;
+    setText('confirm-payment-method', PAYMENT_METHOD_LABELS[method] || 'Pagamento');
 
     const deliveryDate = calculateDeliveryDate(order.shipping.type);
     setText('confirm-delivery-date', formatDate(deliveryDate));
 
-    const addr = order.address;
-    setText('confirm-address', `${addr.street}, ${addr.number} - ${addr.neighborhood}, ${addr.city}/${addr.state}`);
+    const addr = order.address || {};
+    const addressText = addr.street
+        ? `${addr.street}, ${addr.number} - ${addr.neighborhood}, ${addr.city}/${addr.state}`
+        : 'Endereco nao informado';
+    setText('confirm-address', addressText);
 
-    setText('confirm-total', formatCurrency(order.total));
+    setText('confirm-total', formatCurrency(order.total || 0));
 }
 
 /**

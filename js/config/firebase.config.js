@@ -22,4 +22,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { app, db, auth };
+const FUNCTIONS_REGION = 'us-central1';
+const FUNCTIONS_BASE_URL = `https://${FUNCTIONS_REGION}-${firebaseConfig.projectId}.cloudfunctions.net`;
+
+export { app, db, auth, FUNCTIONS_REGION, FUNCTIONS_BASE_URL };

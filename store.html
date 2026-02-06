@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="store.css">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Pular para o conteudo principal</a>
     <!-- Header da Loja -->
     <header class="store-header">
         <div class="header-container">
@@ -88,7 +89,7 @@
     </header>
 
     <!-- Área principal -->
-    <main class="store-main">
+    <main class="store-main" id="main-content">
         <!-- Banner / Hero -->
         <section class="hero-section">
             <div class="hero-carousel" aria-hidden="true">
@@ -629,11 +630,15 @@
                             <i class="fas fa-arrow-left"></i>
                             <span>Voltar</span>
                         </button>
-                        <button class="btn-primary" onclick="processPayment()">
+                        <button class="btn-primary" id="checkout-pay-btn" onclick="processPayment()">
                             <i class="fas fa-lock"></i>
                             <span>Confirmar Pagamento</span>
                         </button>
                     </div>
+                    <p class="checkout-note" id="checkout-note">
+                        <i class="fas fa-shield-halved"></i>
+                        <span id="checkout-note-text">Voce sera redirecionado ao PagBank para concluir o pagamento com seguranca.</span>
+                    </p>
                 </div>
 
                 <!-- Step 3: Confirmação -->
@@ -642,10 +647,10 @@
                         <div class="success-icon">
                             <i class="fas fa-check-circle"></i>
                         </div>
-                        <h2>Pedido Confirmado!</h2>
+                        <h2>Pedido Recebido!</h2>
                         <p class="order-number">Pedido <strong id="order-number">#000000</strong></p>
                         <p class="confirmation-message">
-                            Obrigado pela sua compra! Você receberá um email com os detalhes do pedido.
+                            Seu pedido foi registrado e aguardamos a confirmacao do pagamento.
                         </p>
 
                         <div class="order-details-card">

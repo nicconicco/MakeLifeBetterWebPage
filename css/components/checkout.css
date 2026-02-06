@@ -340,6 +340,19 @@
     flex: 0.6;
 }
 
+.checkout-note {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.checkout-note i {
+    color: var(--color-primary);
+}
+
 /* Confirmation */
 .confirmation-success {
     text-align: center;
