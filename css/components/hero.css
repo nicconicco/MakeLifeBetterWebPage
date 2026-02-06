@@ -179,11 +179,50 @@
     backdrop-filter: blur(10px);
 }
 
-.hero-content h2 {
+.hero-content h1 {
     font-size: 3rem;
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--spacing-lg);
     letter-spacing: -1px;
+}
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-3xl);
+    flex-wrap: wrap;
+}
+
+.hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 12px 22px;
+    border-radius: var(--radius-xl);
+    background: var(--color-primary-gradient);
+    color: var(--color-white);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.35);
+}
+
+.hero-cta--ghost {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--color-white);
+    box-shadow: none;
+}
+
+.hero-cta--ghost:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: none;
 }
 
 .hero-content p {
@@ -196,6 +235,25 @@
     display: flex;
     justify-content: center;
     gap: 60px;
+}
+
+.hero-badges {
+    margin-top: var(--spacing-2xl);
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--font-size-sm);
+}
+
+.hero-badges span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 .stat {
@@ -220,8 +278,12 @@
         padding: clamp(32px, 6vh, 60px) var(--spacing-lg);
     }
 
-    .hero-content h2 {
+    .hero-content h1 {
         font-size: 2rem;
+    }
+
+    .hero-actions {
+        gap: var(--spacing-md);
     }
 
     .hero-stats {

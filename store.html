@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MakeLifeBetter: loja online com produtos selecionados, ofertas e entrega rápida. Compre com segurança e facilidade.">
+    <meta name="theme-color" content="#1f3b34">
+    <meta property="og:title" content="MakeLifeBetter - Loja">
+    <meta property="og:description" content="Produtos selecionados, ofertas e entrega rápida. Compre com segurança e facilidade.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="imgs_banner/banner.png">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MakeLifeBetter - Loja">
+    <meta name="twitter:description" content="Produtos selecionados, ofertas e entrega rápida.">
+    <meta name="twitter:image" content="imgs_banner/banner.png">
     <title>MakeLifeBetter - Loja</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,9 +90,9 @@
                 </button>
 
                 <!-- Carrinho -->
-                <button class="cart-btn" onclick="showCart()">
+                <button class="cart-btn" onclick="showCart()" aria-label="Abrir carrinho">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cart-count">0</span>
+                    <span class="cart-count" id="cart-count" aria-live="polite">0</span>
                 </button>
             </div>
         </div>
@@ -108,8 +118,18 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <span class="hero-badge">Novidades</span>
-                <h2>Descubra Produtos Incríveis</h2>
+                <h1>Descubra Produtos Incriveis</h1>
                 <p>Qualidade e preços que fazem a diferença na sua vida</p>
+                <div class="hero-actions">
+                    <a class="hero-cta" href="#produtos">
+                        <i class="fas fa-bag-shopping"></i>
+                        <span>Ver Produtos</span>
+                    </a>
+                    <a class="hero-cta hero-cta--ghost" href="#categorias">
+                        <i class="fas fa-th-large"></i>
+                        <span>Explorar Categorias</span>
+                    </a>
+                </div>
                 <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number" id="total-products">0</span>
@@ -123,6 +143,12 @@
                         <span class="stat-number">100%</span>
                         <span class="stat-label">Satisfação</span>
                     </div>
+                </div>
+                <div class="hero-badges" aria-label="Formas de pagamento e beneficios">
+                    <span><i class="fas fa-qrcode"></i> PIX</span>
+                    <span><i class="fas fa-credit-card"></i> Cartao</span>
+                    <span><i class="fas fa-barcode"></i> Boleto</span>
+                    <span><i class="fas fa-truck-fast"></i> Entrega rapida</span>
                 </div>
             </div>
         </section>
@@ -177,13 +203,13 @@
             <div class="filters-container">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Buscar produtos..." oninput="filterStoreProducts()">
+                    <input type="text" id="search-input" placeholder="Buscar produtos..." aria-label="Buscar produtos">
                 </div>
                 <div class="filter-options">
-                    <select id="categoria-filter" onchange="filterStoreProducts()">
+                    <select id="categoria-filter" aria-label="Filtrar por categoria">
                         <option value="">Todas as Categorias</option>
                     </select>
-                    <select id="ordenar-filter" onchange="filterStoreProducts()">
+                    <select id="ordenar-filter" aria-label="Ordenar produtos">
                         <option value="recentes">Mais Recentes</option>
                         <option value="preco-menor">Menor Preço</option>
                         <option value="preco-maior">Maior Preço</option>
@@ -194,7 +220,7 @@
         </section>
 
         <!-- Grid de Produtos -->
-        <section class="products-section">
+        <section class="products-section" id="produtos">
             <div class="products-container">
                 <div class="section-header">
                     <h3>Todos os Produtos</h3>

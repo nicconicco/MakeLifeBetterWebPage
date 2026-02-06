@@ -173,6 +173,10 @@
     color: var(--color-error);
 }
 
+.stock-status.low-stock {
+    color: var(--color-warning);
+}
+
 .modal-actions {
     display: flex;
     gap: var(--spacing-md);

@@ -29,11 +29,12 @@ export function renderProducts(products, { onProductClick, onQuickAdd, onWishlis
     }
 
     grid.innerHTML = '';
-
+    const fragment = document.createDocumentFragment();
     products.forEach(product => {
         const card = createProductCard(product, { onProductClick, onQuickAdd, onWishlist });
-        grid.appendChild(card);
+        fragment.appendChild(card);
     });
+    grid.appendChild(fragment);
 
     setText('products-count', `${products.length} produtos`);
 }
@@ -119,6 +120,9 @@ function createPriceHTML(product) {
  */
 function createStockHTML(stock) {
     if (stock > 0) {
+        if (stock <= 5) {
+            return `<span class="stock low-stock"><i class="fas fa-fire"></i> Ultimas ${stock} unidades</span>`;
+        }
         return `<span class="stock in-stock"><i class="fas fa-check-circle"></i> Em estoque</span>`;
     }
     return `<span class="stock out-of-stock"><i class="fas fa-times-circle"></i> Indisponivel</span>`;

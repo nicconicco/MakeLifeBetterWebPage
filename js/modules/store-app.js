@@ -80,7 +80,8 @@ import {
     setupEscapeKey,
     setupClickOutside,
     getElement,
-    setText
+    setText,
+    debounce
 } from '../utils/dom.js';
 
 import {
@@ -265,6 +266,9 @@ async function showOrderReturn(orderId) {
  */
 function handleCartChange(cartItems) {
     updateCartCount(getCartCount());
+    if (isCartSidebarOpen()) {
+        renderCartSidebar();
+    }
 }
 
 /**
@@ -565,6 +569,13 @@ function createProductModalContent(product) {
     const discount = product.precoPromocional && product.preco ?
         Math.round((1 - product.precoPromocional / product.preco) * 100) : 0;
 
+    const stockAvailable = product.estoque > 0;
+    const stockLow = stockAvailable && product.estoque <= 5;
+    const stockClass = stockAvailable ? 'available' : 'unavailable';
+    const stockText = stockAvailable
+        ? (stockLow ? `Ultimas ${product.estoque} unidades em estoque` : `Disponivel - ${product.estoque} unidades em estoque`)
+        : 'Produto indisponivel no momento';
+
     return `
         <div class="modal-product">
             <div class="modal-image">
@@ -590,9 +601,10 @@ function createProductModalContent(product) {
                 </div>
 
                 <div class="modal-stock">
-                    ${product.estoque > 0 ?
-                        `<span class="stock-status available"><i class="fas fa-check-circle"></i> Disponivel - ${product.estoque} unidades em estoque</span>` :
-                        '<span class="stock-status unavailable"><i class="fas fa-times-circle"></i> Produto indisponivel no momento</span>'}
+                    <span class="stock-status ${stockClass}${stockLow ? ' low-stock' : ''}">
+                        <i class="fas ${stockAvailable ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                        ${stockText}
+                    </span>
                 </div>
 
                 <div class="modal-actions">
@@ -614,15 +626,15 @@ function createProductModalContent(product) {
                 <div class="modal-extras">
                     <div class="extra-item">
                         <i class="fas fa-truck"></i>
-                        <span>Frete gratis acima de R$ 199</span>
+                        <span>Frete calculado no checkout</span>
                     </div>
                     <div class="extra-item">
                         <i class="fas fa-shield-alt"></i>
-                        <span>Garantia de 30 dias</span>
+                        <span>Garantia conforme o produto</span>
                     </div>
                     <div class="extra-item">
                         <i class="fas fa-undo"></i>
-                        <span>Devolucao facil</span>
+                        <span>Trocas e devolucoes com suporte</span>
                     </div>
                 </div>
             </div>
@@ -663,30 +675,35 @@ function handleNotifyAvailable(productId) {
 // CART HANDLERS
 // ============================================
 
+function isCartSidebarOpen() {
+    const sidebar = getElement('cart-sidebar');
+    return !!(sidebar && sidebar.classList.contains('show'));
+}
+
+function handleCartQuantityChange(index, delta) {
+    updateQuantity(index, delta);
+}
+
+function handleCartRemove(index) {
+    const item = removeFromCartService(index);
+    if (item) {
+        showToast(`${item.nome} ${SUCCESS_MESSAGES.CART.REMOVED}`, TOAST_TYPES.INFO);
+    }
+}
+
+function renderCartSidebar() {
+    renderCart(getCartItems(), {
+        onUpdateQuantity: handleCartQuantityChange,
+        onRemoveItem: handleCartRemove
+    });
+}
+
 /**
  * Show cart sidebar
  */
 export function showCart() {
     openCartSidebar();
-    renderCart(getCartItems(), {
-        onUpdateQuantity: (index, delta) => {
-            updateQuantity(index, delta);
-            renderCart(getCartItems(), {
-                onUpdateQuantity: arguments.callee.caller.arguments[0].onUpdateQuantity,
-                onRemoveItem: arguments.callee.caller.arguments[0].onRemoveItem
-            });
-        },
-        onRemoveItem: (index) => {
-            const item = removeFromCartService(index);
-            if (item) {
-                showToast(`${item.nome} ${SUCCESS_MESSAGES.CART.REMOVED}`, TOAST_TYPES.INFO);
-            }
-            renderCart(getCartItems(), {
-                onUpdateQuantity: arguments.callee.caller.arguments[0].onUpdateQuantity,
-                onRemoveItem: arguments.callee.caller.arguments[0].onRemoveItem
-            });
-        }
-    });
+    renderCartSidebar();
 }
 
 /**
@@ -1149,7 +1166,8 @@ function setupEventListeners() {
     // Search and filters
     const searchInput = getElement('search-input');
     if (searchInput) {
-        searchInput.addEventListener('input', filterAndRenderProducts);
+        const debouncedFilter = debounce(filterAndRenderProducts, 250);
+        searchInput.addEventListener('input', debouncedFilter);
     }
 
     const categoryFilter = getElement('categoria-filter');

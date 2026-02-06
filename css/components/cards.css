@@ -154,6 +154,10 @@
     color: var(--color-error);
 }
 
+.stock.low-stock {
+    color: var(--color-warning);
+}
+
 /* Category Chip */
 .category-chip {
     display: flex;
