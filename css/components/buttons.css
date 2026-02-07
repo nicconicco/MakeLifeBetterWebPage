@@ -294,6 +294,16 @@
     transform: translateY(-10px);
 }
 
+.wishlist-btn.is-active {
+    background: var(--color-error);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.wishlist-btn.is-active i {
+    color: var(--color-white);
+}
+
 .wishlist-btn:hover {
     background: var(--color-error);
     color: var(--color-white);

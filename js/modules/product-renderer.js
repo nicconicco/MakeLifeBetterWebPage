@@ -14,7 +14,7 @@ import { setHTML, setText, createEmptyState, createLoadingSpinner } from '../uti
  * @param {Function} onQuickAdd - Quick add handler
  * @param {Function} onWishlist - Wishlist handler
  */
-export function renderProducts(products, { onProductClick, onQuickAdd, onWishlist }) {
+export function renderProducts(products, { onProductClick, onQuickAdd, onWishlist, favoriteIds = [] }) {
     const grid = document.getElementById('products-grid');
     if (!grid) return;
 
@@ -31,7 +31,7 @@ export function renderProducts(products, { onProductClick, onQuickAdd, onWishlis
     grid.innerHTML = '';
     const fragment = document.createDocumentFragment();
     products.forEach(product => {
-        const card = createProductCard(product, { onProductClick, onQuickAdd, onWishlist });
+        const card = createProductCard(product, { onProductClick, onQuickAdd, onWishlist, favoriteIds });
         fragment.appendChild(card);
     });
     grid.appendChild(fragment);
@@ -45,7 +45,7 @@ export function renderProducts(products, { onProductClick, onQuickAdd, onWishlis
  * @param {Object} handlers - Event handlers
  * @returns {HTMLElement} Product card element
  */
-function createProductCard(product, { onProductClick, onQuickAdd, onWishlist }) {
+function createProductCard(product, { onProductClick, onQuickAdd, onWishlist, favoriteIds }) {
     const card = document.createElement('div');
     card.className = 'product-card';
     card.onclick = () => onProductClick(product);
@@ -53,6 +53,7 @@ function createProductCard(product, { onProductClick, onQuickAdd, onWishlist }) 
     const priceHTML = createPriceHTML(product);
     const discount = calculateDiscount(product.preco, product.precoPromocional);
 
+    const isFavorite = favoriteIds.includes(product.id);
     card.innerHTML = `
         <div class="product-image">
             ${product.imagem ?
@@ -60,8 +61,8 @@ function createProductCard(product, { onProductClick, onQuickAdd, onWishlist }) 
                     onerror="this.src='https://via.placeholder.com/300x300?text=Sem+Imagem'">` :
                 '<div class="placeholder-image"><i class="fas fa-image"></i></div>'}
             ${discount > 0 ? `<span class="discount-badge">-${discount}%</span>` : ''}
-            <button class="wishlist-btn" onclick="event.stopPropagation();">
-                <i class="far fa-heart"></i>
+            <button class="wishlist-btn${isFavorite ? ' is-active' : ''}" data-product-id="${product.id}" onclick="event.stopPropagation();">
+                <i class="${isFavorite ? 'fas' : 'far'} fa-heart"></i>
             </button>
         </div>
         <div class="product-details">
@@ -82,7 +83,7 @@ function createProductCard(product, { onProductClick, onQuickAdd, onWishlist }) 
     const wishlistBtn = card.querySelector('.wishlist-btn');
     wishlistBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        onWishlist(product.id);
+        onWishlist(product.id, wishlistBtn);
     });
 
     const quickAddBtn = card.querySelector('.quick-add-btn');

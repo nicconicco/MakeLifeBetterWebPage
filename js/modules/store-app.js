@@ -15,14 +15,17 @@ import {
     isLoggedIn,
     updateUserProfile,
     updateUserPassword,
-    getAuthErrorMessage
+    getAuthErrorMessage,
+    toggleFavoriteProduct,
+    removeFavoriteProduct
 } from '../services/auth.service.js';
 
 import {
     getAllProducts,
     extractCategories,
     filterProducts,
-    getEffectivePrice
+    getEffectivePrice,
+    getProductById
 } from '../services/product.service.js';
 import { getAllBanners } from '../services/banner.service.js';
 
@@ -115,6 +118,7 @@ let heroControlsBound = false;
 let heroLoadingTimeout = null;
 let pendingReturnOrderId = null;
 let isProcessingPayment = false;
+let favoriteIds = new Set();
 
 function setHeroLoading(isLoading) {
     const section = document.querySelector('.hero-section');
@@ -192,12 +196,16 @@ export function initStoreApp() {
  */
 function handleAuthStateChange(user, userData) {
     if (user) {
+        favoriteIds = new Set(userData?.favorites || []);
         updateUIForLoggedUser(userData);
+        updateWishlistUI();
         if (pendingReturnOrderId) {
             showOrderReturn(pendingReturnOrderId);
         }
     } else {
+        favoriteIds = new Set();
         updateUIForGuest();
+        updateWishlistUI();
         if (pendingReturnOrderId) {
             showLoginModal();
             showToast('Faca login para visualizar seu pedido.', TOAST_TYPES.INFO);
@@ -317,8 +325,10 @@ function renderProductsWithHandlers(products) {
     renderProducts(products, {
         onProductClick: openProductModal,
         onQuickAdd: handleQuickAdd,
-        onWishlist: handleWishlist
+        onWishlist: handleWishlist,
+        favoriteIds: Array.from(favoriteIds)
     });
+    updateWishlistUI();
 }
 
 /**
@@ -516,15 +526,49 @@ function handleQuickAdd(productId) {
 }
 
 /**
- * Handle add to wishlist
+ * Handle add/remove to wishlist
  * @param {string} productId - Product ID
+ * @param {HTMLElement} buttonEl - Wishlist button
  */
-function handleWishlist(productId) {
+async function handleWishlist(productId, buttonEl) {
     if (!isLoggedIn()) {
         showLoginModal();
         return;
     }
-    showToast(SUCCESS_MESSAGES.WISHLIST.ADDED, TOAST_TYPES.SUCCESS);
+
+    try {
+        const added = await toggleFavoriteProduct(productId);
+        if (added) {
+            favoriteIds.add(productId);
+            showToast(SUCCESS_MESSAGES.WISHLIST.ADDED, TOAST_TYPES.SUCCESS);
+        } else {
+            favoriteIds.delete(productId);
+            showToast('Produto removido dos favoritos.', TOAST_TYPES.INFO);
+        }
+        updateWishlistButton(buttonEl, added);
+        renderProfileFavorites();
+    } catch (error) {
+        console.error('Wishlist error:', error);
+        showToast('Erro ao atualizar favoritos.', TOAST_TYPES.ERROR);
+    }
+}
+
+function updateWishlistButton(buttonEl, isFavorite) {
+    if (!buttonEl) return;
+    buttonEl.classList.toggle('is-active', isFavorite);
+    const icon = buttonEl.querySelector('i');
+    if (icon) {
+        icon.classList.toggle('fas', isFavorite);
+        icon.classList.toggle('far', !isFavorite);
+    }
+}
+
+function updateWishlistUI() {
+    const buttons = document.querySelectorAll('.wishlist-btn[data-product-id]');
+    buttons.forEach(btn => {
+        const productId = btn.dataset.productId;
+        updateWishlistButton(btn, favoriteIds.has(productId));
+    });
 }
 
 /**
@@ -965,6 +1009,77 @@ function updateUIForGuest() {
 // PROFILE HANDLERS
 // ============================================
 
+async function renderProfileFavorites() {
+    const list = getElement('profile-favorites-list');
+    if (!list) return;
+
+    if (!isLoggedIn()) {
+        list.innerHTML = '<p class="no-data">Faça login para ver seus favoritos.</p>';
+        return;
+    }
+
+    const ids = Array.from(favoriteIds);
+    if (ids.length === 0) {
+        list.innerHTML = '<p class="no-data">Você ainda não favoritou produtos.</p>';
+        return;
+    }
+
+    const productMap = new Map(allProducts.map(product => [product.id, product]));
+    const missingIds = ids.filter(id => !productMap.has(id));
+
+    if (missingIds.length > 0) {
+        const fetched = await Promise.all(
+            missingIds.map(id => getProductById(id).catch(() => null))
+        );
+        fetched.filter(Boolean).forEach(product => productMap.set(product.id, product));
+    }
+
+    const escapeHtml = (value = '') => String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const favorites = ids.map(id => productMap.get(id)).filter(Boolean);
+
+    list.innerHTML = favorites.map(product => {
+        const priceValue = product.precoPromocional ?? product.preco ?? 0;
+        const priceText = priceValue ? formatCurrency(priceValue) : 'Preço indisponível';
+        return `
+            <div class="favorite-card">
+                ${product.imagem
+                    ? `<img src="${product.imagem}" alt="${escapeHtml(product.nome || 'Produto')}" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">`
+                    : '<div class="placeholder-image"><i class="fas fa-image"></i></div>'}
+                <div class="favorite-card-body">
+                    <span class="favorite-card-name">${escapeHtml(product.nome || 'Produto')}</span>
+                    <span class="favorite-card-price">${priceText}</span>
+                    <div class="favorite-card-actions">
+                        <button class="favorite-remove" data-id="${product.id}">Remover</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    list.querySelectorAll('.favorite-remove').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            event.stopPropagation();
+            const productId = button.dataset.id;
+            try {
+                await removeFavoriteProduct(productId);
+                favoriteIds.delete(productId);
+                updateWishlistUI();
+                renderProfileFavorites();
+                showToast('Produto removido dos favoritos.', TOAST_TYPES.INFO);
+            } catch (error) {
+                console.error('Erro ao remover favorito:', error);
+                showToast('Erro ao remover favorito.', TOAST_TYPES.ERROR);
+            }
+        });
+    });
+}
+
 /**
  * Show profile modal
  */
@@ -1000,6 +1115,8 @@ export function showProfile() {
     if (userData?.createdAt) {
         setText('profile-created-at', formatDate(userData.createdAt));
     }
+
+    renderProfileFavorites();
 }
 
 /**

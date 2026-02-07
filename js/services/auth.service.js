@@ -11,7 +11,14 @@ import {
     onAuthStateChanged,
     updatePassword
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-import { doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    arrayUnion,
+    arrayRemove
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { COLLECTIONS, ADMIN_EMAILS } from '../config/constants.js';
 
 /**
@@ -70,6 +77,7 @@ function createDefaultUserData(user) {
         id: user.uid,
         username: user.email.split('@')[0],
         email: user.email,
+        favorites: [],
         createdAt: Date.now(),
         isAdmin: isAdminEmail(user.email)
     };
@@ -132,6 +140,51 @@ export async function updateUserProfile(data) {
 
     // Update local data
     currentUserData = { ...currentUserData, ...data };
+}
+
+/**
+ * Toggle favorite product for current user
+ * @param {string} productId - Product ID
+ * @returns {Promise<boolean>} - True if added, false if removed
+ */
+export async function toggleFavoriteProduct(productId) {
+    if (!currentUser) throw new Error('No user logged in');
+    if (!productId) return false;
+
+    const favorites = currentUserData?.favorites || [];
+    const isFavorite = favorites.includes(productId);
+
+    await updateDoc(doc(db, COLLECTIONS.USERS, currentUser.uid), {
+        favorites: isFavorite ? arrayRemove(productId) : arrayUnion(productId),
+        updatedAt: Date.now()
+    });
+
+    const nextFavorites = isFavorite
+        ? favorites.filter(id => id !== productId)
+        : [...favorites, productId];
+
+    currentUserData = { ...currentUserData, favorites: nextFavorites };
+    return !isFavorite;
+}
+
+/**
+ * Remove a product from favorites
+ * @param {string} productId - Product ID
+ */
+export async function removeFavoriteProduct(productId) {
+    if (!currentUser) throw new Error('No user logged in');
+    if (!productId) return;
+
+    const favorites = currentUserData?.favorites || [];
+    await updateDoc(doc(db, COLLECTIONS.USERS, currentUser.uid), {
+        favorites: arrayRemove(productId),
+        updatedAt: Date.now()
+    });
+
+    currentUserData = {
+        ...currentUserData,
+        favorites: favorites.filter(id => id !== productId)
+    };
 }
 
 /**

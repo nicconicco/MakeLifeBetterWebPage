@@ -27,6 +27,7 @@
     height: 220px;
     overflow: hidden;
     background: linear-gradient(135deg, var(--color-gray-100), var(--color-gray-200));
+    padding-top: var(--spacing-md);
 }
 
 .product-image img {
@@ -116,12 +117,12 @@
 .price {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-gray-900);
+    color: var(--color-on-light-strong);
 }
 
 .original-price {
     font-size: 0.95rem;
-    color: var(--color-gray-500);
+    color: var(--color-on-light-muted);
     text-decoration: line-through;
     margin-right: var(--spacing-sm);
 }
