@@ -27,7 +27,8 @@
     height: 220px;
     overflow: hidden;
     background: linear-gradient(135deg, var(--color-gray-100), var(--color-gray-200));
-    padding-top: var(--spacing-md);
+    padding-top: var(--spacing-lg);
+    box-sizing: border-box;
 }
 
 .product-image img {
