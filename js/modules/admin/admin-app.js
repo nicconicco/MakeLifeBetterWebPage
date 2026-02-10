@@ -37,13 +37,16 @@ import {
     toggleProdutoStatus,
     deleteProduto,
     popularProdutosExemplo,
-    deletarTodosProdutos
+    deletarTodosProdutos,
+    downloadProdutosExcelTemplate,
+    importProdutosExcel
 } from './admin-produtos.js';
 import {
     initBannerForm,
     loadBanners,
     addBanners
 } from './admin-banners.js';
+import { logInfo } from '../../utils/logger.js';
 
 /**
  * Load data for current tab
@@ -130,6 +133,8 @@ function exposeGlobalFunctions() {
     window.deleteProduto = deleteProduto;
     window.popularProdutosExemplo = popularProdutosExemplo;
     window.deletarTodosProdutos = deletarTodosProdutos;
+    window.downloadProdutosExcelTemplate = downloadProdutosExcelTemplate;
+    window.importProdutosExcel = importProdutosExcel;
 
     // Banners
     window.addBanners = addBanners;
@@ -184,5 +189,5 @@ export function initAdminApp() {
     // Setup auth listener (will trigger initial data load)
     setupAuthListener();
 
-    console.log('Admin App initialized');
+    logInfo('Admin App initialized');
 }

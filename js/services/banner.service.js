@@ -19,6 +19,7 @@ import {
     deleteObject
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 import { COLLECTIONS } from '../config/constants.js';
+import { logWarn } from '../utils/logger.js';
 
 const storage = getStorage(app);
 
@@ -81,7 +82,7 @@ export async function deleteBanner(bannerId, storagePath) {
         try {
             await deleteObject(ref(storage, storagePath));
         } catch (error) {
-            console.warn('Nao foi possivel remover o arquivo do banner:', error);
+            logWarn('Nao foi possivel remover o arquivo do banner:', error);
         }
     }
 

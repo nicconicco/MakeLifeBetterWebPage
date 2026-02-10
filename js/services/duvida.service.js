@@ -16,6 +16,7 @@ import {
     orderBy,
     increment
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { logWarn } from '../utils/logger.js';
 
 /**
  * Get current user author name
@@ -57,7 +58,7 @@ export async function getAllDuvidas() {
         return extractDocs(querySnapshot);
     } catch (error) {
         // Fallback without ordering if index doesn't exist
-        console.warn('Falling back to unordered query:', error);
+        logWarn('Falling back to unordered query:', error);
         const querySnapshot = await getDocs(collection(db, COLLECTIONS.QUESTIONS));
         return extractDocs(querySnapshot);
     }
@@ -143,7 +144,7 @@ export async function getRespostas(duvidaId) {
         return extractDocs(querySnapshot);
     } catch (error) {
         // Fallback without ordering
-        console.warn('Falling back to unordered respostas query:', error);
+        logWarn('Falling back to unordered respostas query:', error);
         const querySnapshot = await getDocs(
             collection(db, COLLECTIONS.QUESTIONS, duvidaId, 'respostas')
         );

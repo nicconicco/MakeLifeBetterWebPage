@@ -1,0 +1,23 @@
+# Node / Firebase
+node_modules/
+functions/node_modules/
+.firebase/
+firebase-debug.log
+firebase-debug.log.*
+firestore-debug.log
+ui-debug.log
+*.log
+
+# Env files
+.env
+.env.*
+!/.env.example
+functions/.env
+functions/.env.*
+!functions/.env.example
+
+# Firebase runtime config (legacy)
+.runtimeconfig.json
+
+# OS
+.DS_Store

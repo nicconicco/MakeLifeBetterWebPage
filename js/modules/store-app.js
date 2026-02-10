@@ -74,6 +74,11 @@ import {
     displayOrderConfirmation
 } from './checkout.js';
 
+import {
+    initCommunitySections,
+    updateCommunityAuthState
+} from './community.js';
+
 // Utils
 import {
     showToast,
@@ -94,6 +99,7 @@ import {
     formatCardNumber,
     formatCardExpiry
 } from '../utils/formatters.js';
+import { logError, logWarn } from '../utils/logger.js';
 
 // Constants
 import {
@@ -119,6 +125,8 @@ let heroLoadingTimeout = null;
 let pendingReturnOrderId = null;
 let isProcessingPayment = false;
 let favoriteIds = new Set();
+let globalErrorHandlersBound = false;
+let lastGlobalErrorAt = 0;
 
 function setHeroLoading(isLoading) {
     const section = document.querySelector('.hero-section');
@@ -179,6 +187,7 @@ export function initStoreApp() {
 
     // Load data
     loadProducts();
+    initCommunitySections();
 
     // Setup UI
     setupEventListeners();
@@ -199,6 +208,7 @@ function handleAuthStateChange(user, userData) {
         favoriteIds = new Set(userData?.favorites || []);
         updateUIForLoggedUser(userData);
         updateWishlistUI();
+        updateCommunityAuthState(userData);
         if (pendingReturnOrderId) {
             showOrderReturn(pendingReturnOrderId);
         }
@@ -206,6 +216,7 @@ function handleAuthStateChange(user, userData) {
         favoriteIds = new Set();
         updateUIForGuest();
         updateWishlistUI();
+        updateCommunityAuthState(null);
         if (pendingReturnOrderId) {
             showLoginModal();
             showToast('Faca login para visualizar seu pedido.', TOAST_TYPES.INFO);
@@ -260,7 +271,7 @@ async function showOrderReturn(orderId) {
             showToast('Pedido criado. Aguardando confirmacao do pagamento.', TOAST_TYPES.INFO);
         }
     } catch (error) {
-        console.error('Erro ao carregar pedido:', error);
+        logError('Erro ao carregar pedido:', error);
         showToast('Nao foi possivel carregar o pedido.', TOAST_TYPES.ERROR);
     } finally {
         pendingReturnOrderId = null;
@@ -293,7 +304,7 @@ async function loadProducts() {
         try {
             banners = await getAllBanners();
         } catch (error) {
-            console.warn('Nao foi possivel carregar banners:', error);
+            logWarn('Nao foi possivel carregar banners:', error);
         }
 
         // Update UI
@@ -311,7 +322,7 @@ async function loadProducts() {
         initHeroCarousel(heroItems);
 
     } catch (error) {
-        console.error('Error loading products:', error);
+        logError('Error loading products:', error);
         showToast(ERROR_MESSAGES.ORDER.LOAD_FAILED, TOAST_TYPES.ERROR);
         stopHeroLoading();
     }
@@ -548,7 +559,7 @@ async function handleWishlist(productId, buttonEl) {
         updateWishlistButton(buttonEl, added);
         renderProfileFavorites();
     } catch (error) {
-        console.error('Wishlist error:', error);
+        logError('Wishlist error:', error);
         showToast('Erro ao atualizar favoritos.', TOAST_TYPES.ERROR);
     }
 }
@@ -865,7 +876,7 @@ export async function processPayment() {
         const errorLabel = ACTIVE_PAYMENT_PROVIDER === PAYMENT_PROVIDERS.MOCK
             ? 'Error creating order:'
             : 'Error creating PagBank checkout:';
-        console.error(errorLabel, error);
+        logError(errorLabel, error);
         showToast(error.message || ERROR_MESSAGES.ORDER.CREATE_FAILED, TOAST_TYPES.ERROR);
     } finally {
         if (isProcessingPayment) {
@@ -950,7 +961,7 @@ export async function handleLogin(event) {
         }
         closeLoginModal();
     } catch (error) {
-        console.error('Auth error:', error);
+        logError('Auth error:', error);
         showToast(getAuthErrorMessage(error), TOAST_TYPES.ERROR);
     } finally {
         if (submitBtn) {
@@ -1073,7 +1084,7 @@ async function renderProfileFavorites() {
                 renderProfileFavorites();
                 showToast('Produto removido dos favoritos.', TOAST_TYPES.INFO);
             } catch (error) {
-                console.error('Erro ao remover favorito:', error);
+                logError('Erro ao remover favorito:', error);
                 showToast('Erro ao remover favorito.', TOAST_TYPES.ERROR);
             }
         });
@@ -1159,7 +1170,7 @@ export async function handleUpdateProfile(event) {
         showToast(SUCCESS_MESSAGES.PROFILE.UPDATED, TOAST_TYPES.SUCCESS);
         closeProfileModal();
     } catch (error) {
-        console.error('Profile update error:', error);
+        logError('Profile update error:', error);
         showToast(getAuthErrorMessage(error), TOAST_TYPES.ERROR);
     }
 }
@@ -1222,7 +1233,7 @@ async function loadUserOrders() {
         renderOrders(orders, listContainer);
 
     } catch (error) {
-        console.error('Error loading orders:', error);
+        logError('Error loading orders:', error);
         listContainer.innerHTML = `
             <div class="error-state">
                 <i class="fas fa-exclamation-circle"></i>
@@ -1298,6 +1309,32 @@ function setupEventListeners() {
     }
 }
 
+function registerGlobalErrorHandlers() {
+    if (globalErrorHandlersBound) return;
+    globalErrorHandlersBound = true;
+
+    const shouldNotify = () => {
+        const now = Date.now();
+        if (now - lastGlobalErrorAt < 4000) return false;
+        lastGlobalErrorAt = now;
+        return true;
+    };
+
+    window.addEventListener('error', (event) => {
+        logError('Unhandled runtime error', event?.error || event?.message);
+        if (shouldNotify()) {
+            showToast('Ocorreu um erro inesperado. Tente novamente.', TOAST_TYPES.ERROR);
+        }
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+        logError('Unhandled promise rejection', event?.reason);
+        if (shouldNotify()) {
+            showToast('Ocorreu um erro inesperado. Tente novamente.', TOAST_TYPES.ERROR);
+        }
+    });
+}
+
 /**
  * Setup global handlers
  */
@@ -1312,6 +1349,7 @@ function setupGlobalHandlers() {
     });
 
     setupClickOutside('user-menu', 'user-dropdown');
+    registerGlobalErrorHandlers();
 }
 
 function initThemeToggle() {

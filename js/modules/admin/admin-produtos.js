@@ -9,10 +9,41 @@ import {
     deleteProduct
 } from '../../services/product.service.js';
 import { formatCurrency, formatDate } from '../../utils/formatters.js';
+import { logError } from '../../utils/logger.js';
 
 // State
 let allProdutos = [];
 let categoriasSet = new Set();
+const EXCEL_COLUMNS = ['nome', 'descricao', 'preco', 'precoPromocional', 'imagem', 'categoria', 'estoque', 'ativo'];
+const EXCEL_REQUIRED = ['nome', 'preco'];
+
+const HEADER_ALIASES = {
+    nome: 'nome',
+    produto: 'nome',
+    name: 'nome',
+    descricao: 'descricao',
+    descr: 'descricao',
+    description: 'descricao',
+    preco: 'preco',
+    price: 'preco',
+    precopromocional: 'precoPromocional',
+    precopromo: 'precoPromocional',
+    precooferta: 'precoPromocional',
+    promocional: 'precoPromocional',
+    imagem: 'imagem',
+    imagemurl: 'imagem',
+    urlimagem: 'imagem',
+    image: 'imagem',
+    imageurl: 'imagem',
+    categoria: 'categoria',
+    category: 'categoria',
+    estoque: 'estoque',
+    quantidade: 'estoque',
+    stock: 'estoque',
+    ativo: 'ativo',
+    status: 'ativo',
+    visivel: 'ativo'
+};
 
 // Sample products data
 const produtosExemplo = [
@@ -93,6 +124,292 @@ export function initProdutoForm() {
                 preview.innerHTML = '';
             }
         });
+    }
+}
+
+function getXlsx() {
+    const xlsx = window.XLSX;
+    if (!xlsx) {
+        alert('Biblioteca XLSX nao encontrada. Verifique a conexao ou recarregue a pagina.');
+        return null;
+    }
+    return xlsx;
+}
+
+function normalizeText(value) {
+    return String(value === null || value === undefined ? '' : value)
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+function normalizeHeader(value) {
+    return normalizeText(value).replace(/[^a-z0-9]/g, '');
+}
+
+function isRowEmpty(row) {
+    return row.every(cell => String(cell === null || cell === undefined ? '' : cell).trim() === '');
+}
+
+function parseNumber(value) {
+    if (value === null || value === undefined || value === '') {
+        return null;
+    }
+
+    const raw = String(value).trim();
+    if (!raw) {
+        return null;
+    }
+
+    const cleaned = raw.replace(/\s/g, '');
+    const hasComma = cleaned.includes(',');
+    const hasDot = cleaned.includes('.');
+    let normalized = cleaned;
+
+    if (hasComma && hasDot) {
+        normalized = cleaned.replace(/\./g, '').replace(',', '.');
+    } else if (hasComma && !hasDot) {
+        normalized = cleaned.replace(',', '.');
+    }
+
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
+function parseBoolean(value, defaultValue = true) {
+    if (value === null || value === undefined || value === '') {
+        return defaultValue;
+    }
+
+    const text = normalizeText(value);
+    if (['true', '1', 'sim', 's', 'yes', 'y', 'ativo', 'ativa', 'on'].includes(text)) {
+        return true;
+    }
+    if (['false', '0', 'nao', 'n', 'no', 'inativo', 'inativa', 'off'].includes(text)) {
+        return false;
+    }
+    return defaultValue;
+}
+
+function buildProdutoFromRow(rowData) {
+    const errors = [];
+    const nome = String(rowData.nome || '').trim();
+    const descricao = String(rowData.descricao || '').trim();
+    const categoria = String(rowData.categoria || '').trim() || 'Geral';
+    const imagem = String(rowData.imagem || '').trim();
+
+    const preco = parseNumber(rowData.preco);
+    if (!nome) {
+        errors.push('nome obrigatorio');
+    }
+    if (preco === null) {
+        errors.push('preco invalido');
+    } else if (preco < 0) {
+        errors.push('preco deve ser >= 0');
+    }
+
+    let precoPromocional = null;
+    if (rowData.precoPromocional !== null && rowData.precoPromocional !== undefined && rowData.precoPromocional !== '') {
+        precoPromocional = parseNumber(rowData.precoPromocional);
+        if (precoPromocional === null) {
+            errors.push('precoPromocional invalido');
+        } else if (precoPromocional < 0) {
+            errors.push('precoPromocional deve ser >= 0');
+        }
+    }
+
+    let estoque = 0;
+    if (rowData.estoque !== null && rowData.estoque !== undefined && rowData.estoque !== '') {
+        const estoqueParsed = parseNumber(rowData.estoque);
+        if (estoqueParsed === null) {
+            errors.push('estoque invalido');
+        } else if (!Number.isInteger(estoqueParsed)) {
+            errors.push('estoque deve ser inteiro');
+        } else if (estoqueParsed < 0) {
+            errors.push('estoque deve ser >= 0');
+        } else {
+            estoque = estoqueParsed;
+        }
+    }
+
+    const ativo = parseBoolean(rowData.ativo, true);
+
+    return {
+        errors,
+        data: {
+            nome,
+            descricao,
+            preco,
+            precoPromocional,
+            imagem,
+            categoria,
+            estoque,
+            ativo
+        }
+    };
+}
+
+function parseProdutosFromSheet(rows) {
+    const errors = [];
+    const produtos = [];
+
+    if (!rows || rows.length === 0) {
+        errors.push('Planilha vazia.');
+        return { produtos, errors, totalRows: 0 };
+    }
+
+    const headerRow = rows[0] || [];
+    const mappedHeaders = headerRow.map(header => HEADER_ALIASES[normalizeHeader(header)] || null);
+
+    if (!mappedHeaders.some(Boolean)) {
+        errors.push('Nenhuma coluna reconhecida. Use o modelo para importar.');
+        return { produtos, errors, totalRows: 0 };
+    }
+
+    const missingRequired = EXCEL_REQUIRED.filter(required => !mappedHeaders.includes(required));
+    if (missingRequired.length) {
+        errors.push(`Colunas obrigatorias ausentes: ${missingRequired.join(', ')}`);
+        return { produtos, errors, totalRows: 0 };
+    }
+
+    let totalRows = 0;
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i] || [];
+        if (isRowEmpty(row)) {
+            continue;
+        }
+
+        totalRows++;
+        const rowData = {};
+        mappedHeaders.forEach((key, index) => {
+            if (key) {
+                rowData[key] = row[index];
+            }
+        });
+
+        const result = buildProdutoFromRow(rowData);
+        if (result.errors.length) {
+            errors.push(`Linha ${i + 1}: ${result.errors.join(', ')}`);
+            continue;
+        }
+
+        produtos.push(result.data);
+    }
+
+    return { produtos, errors, totalRows };
+}
+
+async function readFileAsArrayBuffer(file) {
+    if (file.arrayBuffer) {
+        return await file.arrayBuffer();
+    }
+
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+export function downloadProdutosExcelTemplate() {
+    const xlsx = getXlsx();
+    if (!xlsx) return;
+
+    const header = EXCEL_COLUMNS;
+    const example = [
+        'Produto Exemplo',
+        'Descricao do produto',
+        19.9,
+        15.9,
+        'https://exemplo.com/imagem.jpg',
+        'Categoria',
+        10,
+        'true'
+    ];
+
+    const worksheet = xlsx.utils.aoa_to_sheet([header, example]);
+    const workbook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Produtos');
+    xlsx.writeFile(workbook, 'modelo-produtos.xlsx');
+}
+
+export async function importProdutosExcel() {
+    const input = document.getElementById('produtos-excel-file');
+    const file = input?.files?.[0];
+    if (!file) {
+        alert('Selecione um arquivo Excel para importar.');
+        return;
+    }
+
+    const xlsx = getXlsx();
+    if (!xlsx) return;
+
+    let rows;
+    try {
+        const buffer = await readFileAsArrayBuffer(file);
+        const workbook = xlsx.read(buffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        if (!sheetName) {
+            alert('Nao foi encontrada nenhuma aba na planilha.');
+            return;
+        }
+        const sheet = workbook.Sheets[sheetName];
+        rows = xlsx.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    } catch (error) {
+        logError('Erro ao ler planilha:', error);
+        alert('Erro ao ler planilha. Verifique o arquivo e tente novamente.');
+        return;
+    }
+
+    const { produtos, errors, totalRows } = parseProdutosFromSheet(rows);
+    const skipped = Math.max(0, totalRows - produtos.length);
+
+    if (errors.length && produtos.length === 0) {
+        alert(`Nao foi possivel importar.\n${errors.slice(0, 5).join('\n')}`);
+        return;
+    }
+
+    if (produtos.length === 0) {
+        alert('Nenhum produto valido encontrado para importar.');
+        return;
+    }
+
+    const proceed = confirm(
+        `Foram encontrados ${produtos.length} produto(s) valido(s). ${skipped} linha(s) sera(o) ignorada(s). Deseja importar?`
+    );
+    if (!proceed) {
+        return;
+    }
+
+    const list = document.getElementById('produtos-list');
+    if (list) {
+        list.innerHTML = '<p class="loading">Importando produtos...</p>';
+    }
+
+    let imported = 0;
+    try {
+        for (const produto of produtos) {
+            await createProduct(produto);
+            imported++;
+        }
+
+        await loadProdutos();
+        input.value = '';
+
+        let message = `Importacao concluida: ${imported} produto(s) importado(s).`;
+        if (skipped > 0) {
+            message += ` ${skipped} linha(s) ignorada(s).`;
+        }
+        if (errors.length) {
+            message += `\nAvisos:\n${errors.slice(0, 5).join('\n')}`;
+        }
+        alert(message);
+    } catch (error) {
+        logError('Erro ao importar produtos:', error);
+        alert('Erro ao importar produtos: ' + error.message);
+        await loadProdutos();
     }
 }
 
@@ -189,7 +506,7 @@ export async function loadProdutos() {
         // Render products
         renderProdutos(allProdutos);
     } catch (error) {
-        console.error('Erro ao carregar produtos:', error);
+        logError('Erro ao carregar produtos:', error);
         alert('Erro ao carregar produtos: ' + error.message);
     }
 }

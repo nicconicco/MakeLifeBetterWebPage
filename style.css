@@ -741,6 +741,29 @@ textarea::placeholder {
     opacity: 0.9;
 }
 
+.produtos-excel {
+    display: grid;
+    gap: 12px;
+}
+
+.produtos-excel .excel-actions,
+.produtos-excel .excel-import {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.produtos-excel .excel-import input[type="file"] {
+    flex: 1;
+    min-width: 220px;
+}
+
+.excel-hint {
+    font-size: 0.88rem;
+    color: var(--color-gray-500);
+}
+
 .example-btn {
     background: var(--color-info-brand);
     color: var(--color-white);

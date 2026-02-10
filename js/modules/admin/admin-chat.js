@@ -4,10 +4,12 @@
  */
 import {
     sendMessage,
-    getAllMessages,
-    deleteMessage
+    deleteMessage,
+    subscribeToMessages
 } from '../../services/chat.service.js';
 import { formatDateTime } from '../../utils/formatters.js';
+
+let chatUnsubscribe = null;
 
 /**
  * Add a new chat message
@@ -24,7 +26,6 @@ export async function addChatMessage() {
     try {
         await sendMessage(message);
         messageInput.value = '';
-        await loadChatMessages();
     } catch (error) {
         alert('Erro ao enviar mensagem: ' + error.message);
     }
@@ -38,33 +39,44 @@ export async function loadChatMessages() {
     if (!list) return;
 
     try {
-        const messages = await getAllMessages();
-
-        if (messages.length === 0) {
-            list.innerHTML = '<p class="no-data">Nenhuma mensagem ainda. Comece a conversa!</p>';
-            return;
+        if (chatUnsubscribe) {
+            chatUnsubscribe();
+            chatUnsubscribe = null;
         }
 
-        list.innerHTML = messages.map(msg => {
-            const date = msg.timestamp ? formatDateTime(msg.timestamp) : '';
+        const handleUpdate = (messages) => {
+            if (messages.length === 0) {
+                list.innerHTML = '<p class="no-data">Nenhuma mensagem ainda. Comece a conversa!</p>';
+                return;
+            }
 
-            return `
-                <div class="chat-message">
-                    <div class="chat-header">
-                        <strong>${msg.author || 'Anonimo'}</strong>
-                        <span class="chat-time">${date}</span>
+            list.innerHTML = messages.map(msg => {
+                const date = msg.timestamp ? formatDateTime(msg.timestamp) : '';
+
+                return `
+                    <div class="chat-message">
+                        <div class="chat-header">
+                            <strong>${msg.author || 'Anonimo'}</strong>
+                            <span class="chat-time">${date}</span>
+                        </div>
+                        <p class="chat-content">${msg.message || ''}</p>
+                        <button class="delete-btn small" data-type="chat" data-id="${msg.id}">x</button>
                     </div>
-                    <p class="chat-content">${msg.message || ''}</p>
-                    <button class="delete-btn small" data-type="chat" data-id="${msg.id}">x</button>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
 
-        // Bind delete buttons
-        bindChatButtons(list);
+            // Bind delete buttons
+            bindChatButtons(list);
 
-        // Scroll to bottom
-        list.scrollTop = list.scrollHeight;
+            // Scroll to bottom
+            list.scrollTop = list.scrollHeight;
+        };
+
+        const handleError = (error) => {
+            alert('Erro ao carregar mensagens: ' + error.message);
+        };
+
+        chatUnsubscribe = subscribeToMessages(handleUpdate, handleError);
     } catch (error) {
         alert('Erro ao carregar mensagens: ' + error.message);
     }
@@ -81,7 +93,6 @@ function bindChatButtons(container) {
 
             try {
                 await deleteMessage(btn.dataset.id);
-                await loadChatMessages();
             } catch (error) {
                 alert('Erro ao deletar mensagem: ' + error.message);
             }

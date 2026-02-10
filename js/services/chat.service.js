@@ -11,8 +11,10 @@ import {
     deleteDoc,
     doc,
     query,
-    orderBy
+    orderBy,
+    onSnapshot
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { logWarn } from '../utils/logger.js';
 
 /**
  * Get current user author name
@@ -52,10 +54,32 @@ export async function getAllMessages() {
         return extractDocs(querySnapshot);
     } catch (error) {
         // Fallback without ordering if index doesn't exist
-        console.warn('Falling back to unordered chat query:', error);
+        logWarn('Falling back to unordered chat query:', error);
         const querySnapshot = await getDocs(collection(db, COLLECTIONS.CHAT));
         return extractDocs(querySnapshot);
     }
+}
+
+/**
+ * Subscribe to chat messages in real time (ordered by timestamp)
+ * @param {Function} onUpdate - Called with array of messages whenever data changes
+ * @param {Function} [onError] - Called on listener error
+ * @returns {Function} - Unsubscribe function
+ */
+export function subscribeToMessages(onUpdate, onError) {
+    const q = query(
+        collection(db, COLLECTIONS.CHAT),
+        orderBy('timestamp', 'asc')
+    );
+
+    return onSnapshot(
+        q,
+        (querySnapshot) => onUpdate(extractDocs(querySnapshot)),
+        (error) => {
+            logWarn('Realtime chat listener error:', error);
+            if (onError) onError(error);
+        }
+    );
 }
 
 /**

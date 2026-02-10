@@ -13,6 +13,14 @@ Este diretorio contem as funcoes HTTP para integrar o checkout PagBank.
 - `ALLOWED_ORIGINS`: lista de origens liberadas (opcional).
 - `FUNCTIONS_BASE_URL`: base das funcoes (opcional).
 
+## Uso local (emulador)
+- Copie `functions/.env.example` para `functions/.env` e preencha os valores.
+- O arquivo `.env` nao deve ser commitado (ja esta no `.gitignore`).
+
+## Produção (seguro)
+- Configure variaveis no ambiente das Cloud Functions (ex: `firebase functions:config:set` ou variaveis de ambiente).
+- Nunca coloque tokens privados no frontend.
+
 ## Observacoes
 - Use `sandbox` ate validar todo o fluxo.
 - O webhook valida a autenticidade via `x-authenticity-token`.

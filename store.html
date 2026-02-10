@@ -49,6 +49,10 @@
                     <i class="fas fa-th-large"></i>
                     <span>Categorias</span>
                 </a>
+                <a href="#eventos" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    <span>Eventos</span>
+                </a>
             </nav>
 
             <div class="header-actions">
@@ -186,6 +190,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Eventos -->
+        <section class="events-section" id="eventos" aria-label="Eventos e avisos">
+            <div class="section-container">
+                <div class="section-header">
+                    <div class="section-title">
+                        <span class="section-eyebrow">
+                            <i class="fas fa-calendar"></i>
+                            Agenda
+                        </span>
+                        <h3>Eventos e Comunicados</h3>
+                        <p class="section-description">Acompanhe os avisos mais recentes e os eventos programados.</p>
+                    </div>
+                    <span class="section-pill" id="events-count">0 eventos</span>
+                </div>
+                <div id="events-list" class="events-grid" aria-live="polite"></div>
             </div>
         </section>
 

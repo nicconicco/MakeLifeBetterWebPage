@@ -20,6 +20,7 @@ import {
     arrayRemove
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { COLLECTIONS, ADMIN_EMAILS } from '../config/constants.js';
+import { logError } from '../utils/logger.js';
 
 /**
  * Current user state
@@ -62,7 +63,7 @@ async function loadUserData(user) {
             await setDoc(doc(db, COLLECTIONS.USERS, user.uid), currentUserData);
         }
     } catch (error) {
-        console.error('Error loading user data:', error);
+        logError('Error loading user data:', error);
         currentUserData = createDefaultUserData(user);
     }
 }

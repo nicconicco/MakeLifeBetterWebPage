@@ -57,6 +57,12 @@ MakeLifeBetterWebPage/
 └── README.md
 ```
 
+## Documentacao de engenharia
+
+- `docs/ARCHITECTURE.md` — visao geral da arquitetura e fluxos.
+- `docs/SECURITY.md` — recomendacoes de seguranca e regras.
+- `CONTRIBUTING.md` — guia rapido para contribuir.
+
 ## Publicar no GitHub Pages
 
 1. No GitHub, acesse **Settings → Pages**
@@ -73,6 +79,18 @@ A página será publicada usando `index.html` como entrada principal.
 2. Configure as credenciais do Firebase em `js/config/firebase.config.js`
 3. Abra `store.html` (loja) ou `index.html` (admin)
 4. Use um servidor local (ex: Live Server) para evitar problemas de CORS
+
+## Seguranca e chaves
+
+- A configuracao do Firebase no frontend nao e segredo, mas as regras do Firestore/Storage devem estar bem restritas.
+- Tokens privados (PagBank/Rede) devem ficar apenas no backend (`functions/`) via variaveis de ambiente.
+- Existe um exemplo em `functions/.env.example` e um `.gitignore` para evitar commit acidental de segredos.
+
+## Debug rapido
+
+Para habilitar logs informativos no navegador:
+`localStorage.setItem('mlb_debug', 'true')`
+(para desativar: `localStorage.removeItem('mlb_debug')`)
 
 ## PagBank (checkout real) — Cloud Functions
 

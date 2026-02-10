@@ -8,6 +8,7 @@ import {
     uploadBanner,
     deleteBanner
 } from '../../services/banner.service.js';
+import { logError } from '../../utils/logger.js';
 
 let bannerPreviewUrls = [];
 
@@ -56,7 +57,7 @@ export async function loadBanners() {
 
         bindBannerButtons(list);
     } catch (error) {
-        console.error('Erro ao carregar banners:', error);
+        logError('Erro ao carregar banners:', error);
         list.innerHTML = '<p class="error">Erro ao carregar banners.</p>';
     }
 }
@@ -90,7 +91,7 @@ export async function addBanners() {
         await loadBanners();
         alert(`${count} banner${count > 1 ? 's' : ''} adicionado${count > 1 ? 's' : ''} com sucesso!`);
     } catch (error) {
-        console.error('Erro ao adicionar banners:', error);
+        logError('Erro ao adicionar banners:', error);
         alert('Erro ao adicionar banners: ' + error.message);
         await loadBanners();
     }
