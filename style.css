@@ -1118,3 +1118,112 @@ textarea::placeholder {
     font-size: 12px;
     color: var(--color-gray-500);
 }
+
+/* ── Minha Conta ── */
+.account-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    background: var(--admin-surface-muted, #f9fafb);
+    border: 1px solid var(--admin-border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+}
+
+.account-avatar {
+    font-size: 4rem;
+    color: var(--color-primary, #4caf50);
+    line-height: 1;
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+}
+
+.account-info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.account-info-row:last-child {
+    border-bottom: none;
+}
+
+.account-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+    min-width: 130px;
+    flex-shrink: 0;
+}
+
+.account-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.account-uid {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: #9ca3af;
+    letter-spacing: 0.3px;
+}
+
+.account-role {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.account-role.role-admin {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #2e7d32;
+}
+
+.account-role.role-user {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+.account-section {
+    margin-bottom: 24px;
+    padding: 24px;
+    background: var(--admin-surface, #fff);
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+}
+
+.account-section h3 {
+    font-size: 1rem;
+    color: #1f2937;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.account-section h3 i {
+    color: var(--color-primary, #4caf50);
+}
+
+.account-section .form-section {
+    margin-bottom: 0;
+}
+
+.account-section .form-actions {
+    margin-top: 16px;
+}

@@ -69,6 +69,9 @@ function createProductCard(product, { onProductClick, onQuickAdd, onWishlist, fa
             <span class="product-category">${product.categoria || 'Geral'}</span>
             <h3 class="product-name">${product.nome}</h3>
             <p class="product-description">${truncateText(product.descricao, 60)}</p>
+            ${product.caracteristicas ? `<p class="product-detail-info"><i class="fas fa-list-ul"></i> ${truncateText(product.caracteristicas, 50)}</p>` : ''}
+            ${product.curiosidades ? `<p class="product-detail-info"><i class="fas fa-lightbulb"></i> ${truncateText(product.curiosidades, 50)}</p>` : ''}
+            ${product.harmonizacao ? `<p class="product-detail-info"><i class="fas fa-utensils"></i> ${truncateText(product.harmonizacao, 50)}</p>` : ''}
             <div class="product-price">${priceHTML}</div>
             <div class="product-footer">
                 ${createStockHTML(product.estoque)}

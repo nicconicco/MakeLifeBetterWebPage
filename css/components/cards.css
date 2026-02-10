@@ -111,6 +111,22 @@
     line-height: 1.5;
 }
 
+.product-detail-info {
+    color: var(--color-on-light-muted);
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.product-detail-info i {
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    flex-shrink: 0;
+}
+
 .product-price {
     margin-bottom: var(--spacing-lg);
 }

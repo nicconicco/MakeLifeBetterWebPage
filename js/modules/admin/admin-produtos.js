@@ -420,6 +420,9 @@ export async function addOrUpdateProduto() {
     const editId = document.getElementById('produto-edit-id').value;
     const nome = document.getElementById('produto-nome').value;
     const descricao = document.getElementById('produto-descricao').value;
+    const caracteristicas = document.getElementById('produto-caracteristicas').value;
+    const curiosidades = document.getElementById('produto-curiosidades').value;
+    const harmonizacao = document.getElementById('produto-harmonizacao').value;
     const preco = document.getElementById('produto-preco').value;
     const precoPromocional = document.getElementById('produto-preco-promocional').value;
     const imagem = document.getElementById('produto-imagem').value;
@@ -435,6 +438,9 @@ export async function addOrUpdateProduto() {
     const produtoData = {
         nome,
         descricao: descricao || '',
+        caracteristicas: caracteristicas || '',
+        curiosidades: curiosidades || '',
+        harmonizacao: harmonizacao || '',
         preco: parseFloat(preco),
         precoPromocional: precoPromocional ? parseFloat(precoPromocional) : null,
         imagem: imagem || '',
@@ -466,6 +472,9 @@ export function clearProdutoForm() {
     document.getElementById('produto-edit-id').value = '';
     document.getElementById('produto-nome').value = '';
     document.getElementById('produto-descricao').value = '';
+    document.getElementById('produto-caracteristicas').value = '';
+    document.getElementById('produto-curiosidades').value = '';
+    document.getElementById('produto-harmonizacao').value = '';
     document.getElementById('produto-preco').value = '';
     document.getElementById('produto-preco-promocional').value = '';
     document.getElementById('produto-imagem').value = '';
@@ -651,6 +660,9 @@ export function editProduto(produtoId) {
     document.getElementById('produto-edit-id').value = produtoId;
     document.getElementById('produto-nome').value = produto.nome || '';
     document.getElementById('produto-descricao').value = produto.descricao || '';
+    document.getElementById('produto-caracteristicas').value = produto.caracteristicas || '';
+    document.getElementById('produto-curiosidades').value = produto.curiosidades || '';
+    document.getElementById('produto-harmonizacao').value = produto.harmonizacao || '';
     document.getElementById('produto-preco').value = produto.preco || '';
     document.getElementById('produto-preco-promocional').value = produto.precoPromocional || '';
     document.getElementById('produto-imagem').value = produto.imagem || '';

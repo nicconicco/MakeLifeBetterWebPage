@@ -645,6 +645,21 @@ function createProductModalContent(product) {
                 <h2 class="modal-title">${product.nome}</h2>
                 <p class="modal-description">${product.descricao || 'Sem descricao disponivel.'}</p>
 
+                ${product.caracteristicas ? `<div class="modal-details-section">
+                    <h3><i class="fas fa-list-ul"></i> Características Principais</h3>
+                    <p>${product.caracteristicas}</p>
+                </div>` : ''}
+
+                ${product.curiosidades ? `<div class="modal-details-section">
+                    <h3><i class="fas fa-lightbulb"></i> Curiosidades</h3>
+                    <p>${product.curiosidades}</p>
+                </div>` : ''}
+
+                ${product.harmonizacao ? `<div class="modal-details-section">
+                    <h3><i class="fas fa-utensils"></i> Harmonização</h3>
+                    <p>${product.harmonizacao}</p>
+                </div>` : ''}
+
                 <div class="modal-price-section">
                     ${promoPrice ?
                         `<div class="modal-prices">

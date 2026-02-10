@@ -18,7 +18,8 @@ export const COLLECTIONS = {
 // Admin Emails
 export const ADMIN_EMAILS = [
     'admin@makelifebetter.com',
-    'carlos@makelifebetter.com'
+    'carlos@makelifebetter.com',
+    'nicco@gmail.com'
 ];
 
 // Storage Keys

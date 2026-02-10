@@ -16,13 +16,12 @@
             <div class="admin-hero-text">
                 <span class="admin-kicker">Painel de Gestão</span>
                 <h1>MakeLifeBetter</h1>
-                <p class="admin-subtitle">Gerencie eventos, produtos, banners, usuários e atendimentos em um só lugar.</p>
+                <p class="admin-subtitle">Gerencie eventos, produtos, banners e atendimentos em um só lugar.</p>
             </div>
             <div class="admin-hero-tags">
                 <span class="admin-tag">Eventos</span>
                 <span class="admin-tag">Produtos</span>
                 <span class="admin-tag">Banners</span>
-                <span class="admin-tag">Usuários</span>
             </div>
         </header>
 
@@ -51,10 +50,9 @@
                     <button class="tab-btn active" onclick="showTab('eventos', event)">Eventos</button>
                     <button class="tab-btn" onclick="showTab('event_location', event)">Locais</button>
                     <button class="tab-btn" onclick="showTab('duvidas', event)">Dúvidas</button>
-                    <button class="tab-btn" onclick="showTab('lista_geral', event)">Chat Geral</button>
-                    <button class="tab-btn" onclick="showTab('users', event)">Usuários</button>
                     <button class="tab-btn produtos-tab-btn" onclick="showTab('produtos', event)">Produtos</button>
                     <button class="tab-btn" onclick="showTab('banners', event)">Banners</button>
+                    <button class="tab-btn" onclick="showTab('minha_conta', event)">Minha Conta</button>
                 </div>
 
                 <!-- Tab Eventos -->
@@ -114,29 +112,6 @@
                     <div id="duvidas-list" class="items-list"></div>
                 </div>
 
-            <!-- Tab Lista Geral (Chat) -->
-            <!-- Campos Firebase: author, message, timestamp -->
-                <div id="lista_geral-tab" class="tab-content">
-                    <h2>Chat Geral</h2>
-                    <div id="lista_geral-list" class="chat-container"></div>
-                    <div class="chat-input-section">
-                        <textarea id="chat-message" placeholder="Digite sua mensagem..."></textarea>
-                        <button onclick="addListaGeral()">Enviar</button>
-                    </div>
-                </div>
-
-            <!-- Tab Users -->
-            <!-- Campos Firebase: id, username, email, createdAt -->
-                <div id="users-tab" class="tab-content">
-                    <h2>Gerenciar Usuários</h2>
-                    <div class="form-section">
-                        <input type="text" id="user-username" placeholder="Username">
-                        <input type="email" id="user-email" placeholder="Email">
-                        <button onclick="addUser()">Adicionar Usuário</button>
-                    </div>
-                    <div id="users-list" class="items-list"></div>
-                </div>
-
             <!-- Tab Produtos (E-commerce) -->
             <!-- Campos Firebase: nome, descricao, preco, precoPromocional, imagem, categoria, estoque, ativo, createdAt, updatedAt -->
                 <div id="produtos-tab" class="tab-content">
@@ -163,6 +138,9 @@
                             <input type="text" id="produto-categoria" placeholder="Categoria (ex: Eletrônicos, Roupas)">
                         </div>
                         <textarea id="produto-descricao" placeholder="Descrição detalhada do produto..."></textarea>
+                        <textarea id="produto-caracteristicas" placeholder="Características principais (estilo, ABV, aparência, aroma, sabor, textura...)"></textarea>
+                        <textarea id="produto-curiosidades" placeholder="Curiosidades sobre o produto..."></textarea>
+                        <textarea id="produto-harmonizacao" placeholder="Sugestões de harmonização..."></textarea>
                         <div class="form-row">
                             <input type="number" id="produto-preco" placeholder="Preço (R$)" step="0.01" min="0" required>
                             <input type="number" id="produto-preco-promocional" placeholder="Preço Promocional (opcional)" step="0.01" min="0">
@@ -207,6 +185,42 @@
                         <div class="banner-preview" id="banner-preview"></div>
                     </div>
                     <div id="banners-list" class="items-list banner-grid"></div>
+                </div>
+
+                <!-- Tab Minha Conta -->
+                <div id="minha_conta-tab" class="tab-content">
+                    <h2>Minha Conta</h2>
+
+                    <div class="account-info-card">
+                        <div class="account-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="account-details">
+                            <div class="account-info-row">
+                                <span class="account-label">Usuário:</span>
+                                <span class="account-value" id="account-email">—</span>
+                            </div>
+                            <div class="account-info-row">
+                                <span class="account-label">Tipo de acesso:</span>
+                                <span class="account-role" id="account-role">—</span>
+                            </div>
+                            <div class="account-info-row">
+                                <span class="account-label">UID do sistema:</span>
+                                <span class="account-value account-uid" id="account-uid">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="account-section">
+                        <h3><i class="fas fa-lock"></i> Alterar Senha</h3>
+                        <div class="form-section">
+                            <input type="password" id="account-new-password" placeholder="Nova senha (min. 6 caracteres)">
+                            <input type="password" id="account-confirm-password" placeholder="Confirmar nova senha">
+                            <div class="form-actions">
+                                <button onclick="updateAccountPassword()">Salvar Senha</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="logout-section">

@@ -3,4 +3,110 @@
  * Main styles are in modals.css
  */
 
-/* Additional auth-specific styles can be added here */
+/* Account Info Card */
+.account-info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-2xl);
+    background: var(--color-gray-50, #f9fafb);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-3xl);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.account-avatar {
+    font-size: 4rem;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    flex: 1;
+}
+
+.account-info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.account-info-row:last-child {
+    border-bottom: none;
+}
+
+.account-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-600);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.account-value {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-on-light-strong);
+}
+
+.account-uid {
+    font-family: monospace;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.account-role {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.account-role.role-admin {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #2e7d32;
+}
+
+.account-role.role-user {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+}
+
+/* Account Sections */
+.account-section {
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-2xl);
+    background: var(--color-white);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+}
+
+.account-section h3 {
+    font-size: 1rem;
+    color: var(--color-on-light-strong);
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-200);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.account-section h3 i {
+    color: var(--color-primary);
+}
+
+.account-section .form-section {
+    margin-bottom: 0;
+}
+
+.account-section .form-actions {
+    margin-top: var(--spacing-lg);
+}

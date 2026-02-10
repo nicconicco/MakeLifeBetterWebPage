@@ -115,6 +115,36 @@
     margin-bottom: var(--spacing-2xl);
 }
 
+.modal-details-section {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--color-gray-50, #f9fafb);
+    border-radius: var(--radius-lg);
+}
+
+.modal-details-section h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-on-light-strong);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.modal-details-section h3 i {
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+}
+
+.modal-details-section p {
+    color: var(--color-on-light-muted);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    white-space: pre-line;
+    margin: 0;
+}
+
 .modal-price-section {
     margin-bottom: var(--spacing-xl);
 }

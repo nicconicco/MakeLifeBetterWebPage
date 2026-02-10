@@ -3,7 +3,10 @@
  * Main orchestrator for admin panel
  */
 import { auth } from '../../config/firebase.config.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import {
+    onAuthStateChanged,
+    updatePassword
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
 // Import auth module
 import {
@@ -12,6 +15,8 @@ import {
     logout,
     updateAuthUI
 } from './admin-auth.js';
+
+import { isAdminEmail } from '../../services/auth.service.js';
 
 // Import tabs module
 import {
@@ -25,8 +30,6 @@ import {
 import { addEvento, loadEventos } from './admin-eventos.js';
 import { addEventLocation, loadEventLocations, showAddContactForm } from './admin-locations.js';
 import { addDuvida, loadDuvidas, viewRespostas, showReplyForm, hideReplyForm, submitResposta } from './admin-duvidas.js';
-import { addChatMessage, loadChatMessages } from './admin-chat.js';
-import { addUser, loadUsers } from './admin-users.js';
 import {
     initProdutoForm,
     addOrUpdateProduto,
@@ -63,17 +66,14 @@ function loadCurrentTabData(tabName) {
         case 'duvidas':
             loadDuvidas();
             break;
-        case 'lista_geral':
-            loadChatMessages();
-            break;
-        case 'users':
-            loadUsers();
-            break;
         case 'produtos':
             loadProdutos();
             break;
         case 'banners':
             loadBanners();
+            break;
+        case 'minha_conta':
+            loadAccountInfo();
             break;
     }
 }
@@ -90,6 +90,61 @@ function setupAuthListener() {
             loadCurrentTabData(getCurrentTab());
         }
     });
+}
+
+/**
+ * Load account info into the Minha Conta tab
+ */
+function loadAccountInfo() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const admin = isAdminEmail(user.email);
+
+    const emailEl = document.getElementById('account-email');
+    const roleEl = document.getElementById('account-role');
+    const uidEl = document.getElementById('account-uid');
+
+    if (emailEl) emailEl.textContent = user.email || '—';
+    if (roleEl) {
+        roleEl.textContent = admin ? 'Administrador' : 'Usuário';
+        roleEl.className = 'account-role ' + (admin ? 'role-admin' : 'role-user');
+    }
+    if (uidEl) uidEl.textContent = user.uid || '—';
+}
+
+/**
+ * Update account password
+ */
+async function updateAccountPassword() {
+    const newPass = document.getElementById('account-new-password').value;
+    const confirmPass = document.getElementById('account-confirm-password').value;
+
+    if (!newPass || newPass.length < 6) {
+        alert('A senha deve ter no mínimo 6 caracteres.');
+        return;
+    }
+    if (newPass !== confirmPass) {
+        alert('As senhas não coincidem.');
+        return;
+    }
+
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('Nenhum usuário logado.');
+
+        await updatePassword(user, newPass);
+
+        document.getElementById('account-new-password').value = '';
+        document.getElementById('account-confirm-password').value = '';
+        alert('Senha atualizada com sucesso!');
+    } catch (error) {
+        if (error.code === 'auth/requires-recent-login') {
+            alert('Por segurança, faça logout e login novamente antes de alterar a senha.');
+        } else {
+            alert('Erro ao atualizar senha: ' + error.message);
+        }
+    }
 }
 
 /**
@@ -118,11 +173,6 @@ function exposeGlobalFunctions() {
     window.hideReplyForm = hideReplyForm;
     window.addResposta = submitResposta;
 
-    // Chat
-    window.addListaGeral = addChatMessage;
-
-    // Users
-    window.addUser = addUser;
 
     // Produtos
     window.addOrUpdateProduto = addOrUpdateProduto;
@@ -139,6 +189,9 @@ function exposeGlobalFunctions() {
     // Banners
     window.addBanners = addBanners;
 
+    // Minha Conta
+    window.updateAccountPassword = updateAccountPassword;
+
     // Generic delete (for backwards compatibility)
     window.deleteItem = async function(collectionName, itemId) {
         if (!confirm('Tem certeza que deseja deletar este item?')) return;
@@ -148,8 +201,6 @@ function exposeGlobalFunctions() {
             eventos: { delete: () => import('../../services/evento.service.js').then(m => m.deleteEvento(itemId)), load: loadEventos },
             event_location: { delete: () => import('../../services/event-location.service.js').then(m => m.deleteEventLocation(itemId)), load: loadEventLocations },
             duvidas: { delete: () => import('../../services/duvida.service.js').then(m => m.deleteDuvida(itemId)), load: loadDuvidas },
-            lista_geral: { delete: () => import('../../services/chat.service.js').then(m => m.deleteMessage(itemId)), load: loadChatMessages },
-            users: { delete: () => import('../../services/user.service.js').then(m => m.deleteUserDoc(itemId)), load: loadUsers },
             produtos: { delete: () => import('../../services/product.service.js').then(m => m.deleteProduct(itemId)), load: loadProdutos }
         };
 
