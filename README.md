@@ -109,6 +109,52 @@ No frontend, a chave `ACTIVE_PAYMENT_PROVIDER` em `js/config/constants.js` defin
 - `mock`: checkout simulado (padrão)
 - `pagbank`: redireciona ao PagBank (requer backend configurado)
 
+## Arquitetura
+
+O código segue uma arquitetura em camadas:
+
+```
+HTML (Templates)
+    ↓
+Modules (Lógica de UI — js/modules/)
+    ↓
+Services (Acesso a dados — js/services/)
+    ↓
+Firebase SDK + Cloud Functions
+```
+
+- **11 services** — auth, product, order, cart, payment, user, events, etc.
+- **13 modules** — store-app, cart-renderer, checkout + 8 módulos admin
+- **5 utilitários** — logger, DOM helpers, formatters, storage
+
+## Stack Completa
+
+| Camada | Tecnologia |
+|--------|-----------|
+| **Frontend** | Vanilla JavaScript (ES6 modules) — sem framework |
+| **Estilização** | CSS3 puro com CSS variables, arquitetura modular (23 arquivos) |
+| **Backend** | Firebase — Firestore (NoSQL), Authentication, Storage |
+| **Cloud Functions** | Node.js 18 + Express — processamento de pagamentos |
+| **Pagamentos** | PagBank (principal), Rede (em desenvolvimento), Mock (testes) |
+| **Hospedagem** | GitHub Pages (frontend) + Firebase (functions) |
+| **Ícones** | Font Awesome 6.4.0 |
+| **Fontes** | Google Fonts (Inter & Sora) |
+
+## Banco de Dados (Firestore)
+
+8 coleções principais:
+
+| Coleção | Finalidade |
+|---------|-----------|
+| `users` | Perfis de usuário e preferências |
+| `produtos` | Catálogo de produtos |
+| `pedidos` | Pedidos e pagamentos |
+| `eventos` | Eventos |
+| `event_location` | Locais de eventos |
+| `duvidas` | Perguntas e respostas |
+| `lista_geral` | Chat público |
+| `banners` | Imagens do hero section |
+
 ## Licença
 
 Este projeto é para uso educacional e pessoal.

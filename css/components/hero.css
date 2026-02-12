@@ -274,24 +274,43 @@
 /* Responsive */
 @media (max-width: 768px) {
     .hero-section {
-        min-height: clamp(260px, 55vh, 420px);
-        padding: clamp(32px, 6vh, 60px) var(--spacing-lg);
+        min-height: auto;
+        padding: var(--spacing-2xl) var(--spacing-lg);
     }
 
     .hero-content h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .hero-content p {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .hero-badge {
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-xs) var(--spacing-lg);
+        font-size: var(--font-size-xs);
     }
 
     .hero-actions {
         gap: var(--spacing-md);
+        margin-bottom: var(--spacing-xl);
     }
 
     .hero-stats {
-        gap: 30px;
+        gap: 20px;
     }
 
     .stat-number {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
+    }
+
+    .hero-badges {
+        margin-top: var(--spacing-lg);
+        gap: var(--spacing-sm);
+        font-size: var(--font-size-xs);
     }
 
     .hero-control {
@@ -300,18 +319,53 @@
     }
 
     .hero-control--prev {
-        left: 12px;
+        left: 8px;
     }
 
     .hero-control--next {
-        right: 12px;
+        right: 8px;
     }
 }
 
 @media (max-width: 480px) {
     .hero-section {
-        min-height: clamp(240px, 50vh, 360px);
-        padding: clamp(28px, 5vh, 50px) var(--spacing-md);
+        min-height: auto;
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .hero-content h1 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .hero-content p {
+        font-size: var(--font-size-sm);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .hero-actions {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .hero-cta {
+        padding: 10px 16px;
+        font-size: var(--font-size-xs);
+    }
+
+    .hero-stats {
+        gap: 16px;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
+    }
+
+    .stat-label {
+        font-size: var(--font-size-xs);
+    }
+
+    .hero-badges span {
+        padding: 4px 8px;
     }
 }
 
