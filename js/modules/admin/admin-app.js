@@ -221,9 +221,48 @@ function exposeGlobalFunctions() {
 }
 
 /**
+ * Hide loading and show the appropriate section
+ */
+function showAppReady() {
+    const loadingSection = document.getElementById('loading-section');
+    const authSection = document.getElementById('auth-section');
+
+    if (loadingSection) loadingSection.style.display = 'none';
+    if (authSection) authSection.style.display = '';
+}
+
+/**
+ * Hide loading and show error message
+ */
+function showAppError(message) {
+    const loadingSection = document.getElementById('loading-section');
+    const errorSection = document.getElementById('error-section');
+    const errorMessage = document.getElementById('error-message');
+
+    if (loadingSection) loadingSection.style.display = 'none';
+    if (errorSection) errorSection.style.display = '';
+    if (errorMessage && message) errorMessage.textContent = message;
+}
+
+/**
  * Initialize admin application
  */
 export function initAdminApp() {
+    // Expose global functions immediately so onclick handlers work
+    exposeGlobalFunctions();
+
+    // Verify Firebase loaded correctly by checking if auth is available
+    try {
+        if (!auth) throw new Error('Firebase Auth não disponível');
+    } catch (error) {
+        showAppError('Não foi possível conectar ao Firebase. Verifique sua conexão e tente novamente.');
+        logInfo('Admin App failed to initialize: ' + error.message);
+        return;
+    }
+
+    // Firebase loaded — show the app
+    showAppReady();
+
     // Setup tab change callback
     onTabChange(loadCurrentTabData);
 
@@ -233,9 +272,6 @@ export function initAdminApp() {
     // Initialize product form listeners
     initProdutoForm();
     initBannerForm();
-
-    // Expose global functions
-    exposeGlobalFunctions();
 
     // Setup auth listener (will trigger initial data load)
     setupAuthListener();

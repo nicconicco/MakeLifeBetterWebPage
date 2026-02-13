@@ -1,23 +1,21 @@
 /**
  * Firebase Configuration
- * Centralized Firebase setup and initialization
+ * Fetches config from Cloud Function to avoid hardcoding secrets in the repo.
+ * Uses top-level await so all importers wait for Firebase to be ready.
  */
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDcHBBJC1BHAIDO8vSGQsNSN3y_e6sTmBM",
-    authDomain: "makelifebetter-7f3c9.firebaseapp.com",
-    projectId: "makelifebetter-7f3c9",
-    storageBucket: "makelifebetter-7f3c9.firebasestorage.app",
-    messagingSenderId: "749904577078",
-    appId: "1:749904577078:web:3235cbb8e26ffaabba0e97",
-    measurementId: "G-ZPNC0MZ1T7"
-};
+const CONFIG_URL = 'https://us-central1-makelifebetter-7f3c9.cloudfunctions.net/getWebConfig';
 
-// Initialize Firebase
+const response = await fetch(CONFIG_URL);
+if (!response.ok) {
+    throw new Error('Failed to fetch Firebase config');
+}
+const firebaseConfig = await response.json();
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);

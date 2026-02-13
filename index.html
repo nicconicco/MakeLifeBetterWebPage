@@ -27,8 +27,21 @@
 
         <div class="container admin-panel">
 
+            <!-- Loading do Firebase -->
+            <div id="loading-section" class="auth-card loading-card">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">Conectando ao servidor...</p>
+            </div>
+
+            <!-- Erro ao carregar Firebase -->
+            <div id="error-section" class="auth-card error-card" style="display: none;">
+                <h2>Erro de Conexão</h2>
+                <p class="error-text" id="error-message">Não foi possível conectar ao Firebase. Verifique sua conexão e tente novamente.</p>
+                <button onclick="location.reload()">Tentar Novamente</button>
+            </div>
+
             <!-- Seção de Login -->
-            <div id="auth-section" class="auth-card">
+            <div id="auth-section" class="auth-card" style="display: none;">
                 <div class="auth-header">
                     <h2>Login</h2>
                     <p class="auth-subtitle">Acesse para continuar o gerenciamento.</p>
