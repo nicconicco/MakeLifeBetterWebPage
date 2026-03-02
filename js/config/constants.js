@@ -32,6 +32,7 @@ export const STORAGE_KEYS = {
 export const ORDER_STATUS = {
     PENDING: 'pending',
     PAID: 'paid',
+    PROCESSING: 'processing',
     SHIPPED: 'shipped',
     DELIVERED: 'delivered',
     CANCELLED: 'cancelled'
@@ -41,6 +42,7 @@ export const ORDER_STATUS = {
 export const ORDER_STATUS_LABELS = {
     [ORDER_STATUS.PENDING]: { label: 'Aguardando Pagamento', class: 'pending' },
     [ORDER_STATUS.PAID]: { label: 'Pago', class: 'paid' },
+    [ORDER_STATUS.PROCESSING]: { label: 'Em Preparo', class: 'processing' },
     [ORDER_STATUS.SHIPPED]: { label: 'Enviado', class: 'shipped' },
     [ORDER_STATUS.DELIVERED]: { label: 'Entregue', class: 'delivered' },
     [ORDER_STATUS.CANCELLED]: { label: 'Cancelado', class: 'cancelled' }

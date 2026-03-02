@@ -64,6 +64,7 @@
                     <button class="tab-btn" onclick="showTab('event_location', event)">Locais</button>
                     <button class="tab-btn" onclick="showTab('duvidas', event)">Dúvidas</button>
                     <button class="tab-btn produtos-tab-btn" onclick="showTab('produtos', event)">Produtos</button>
+                    <button class="tab-btn" onclick="showTab('pedidos', event)">Pedidos</button>
                     <button class="tab-btn" onclick="showTab('banners', event)">Banners</button>
                     <button class="tab-btn" onclick="showTab('minha_conta', event)">Minha Conta</button>
                 </div>
@@ -184,6 +185,37 @@
                         </select>
                     </div>
                     <div id="produtos-list" class="produtos-grid"></div>
+                </div>
+
+            <!-- Tab Pedidos -->
+                <div id="pedidos-tab" class="tab-content">
+                    <h2>Gerenciar Pedidos</h2>
+                    <div class="pedidos-header">
+                        <div class="pedidos-counters">
+                            <span class="counter-badge" id="pedidos-total">Total: 0</span>
+                            <span class="counter-badge pending" id="pedidos-pendentes">Pendentes: 0</span>
+                            <span class="counter-badge paid" id="pedidos-pagos">Pagos: 0</span>
+                            <span class="counter-badge shipped" id="pedidos-enviados">Enviados: 0</span>
+                        </div>
+                    </div>
+                    <div class="pedidos-filters">
+                        <select id="pedidos-filter-status" onchange="filterPedidos()">
+                            <option value="">Todos os status</option>
+                            <option value="pending">Aguardando Pagamento</option>
+                            <option value="paid">Pago</option>
+                            <option value="processing">Em Preparo</option>
+                            <option value="shipped">Enviado</option>
+                            <option value="delivered">Entregue</option>
+                            <option value="cancelled">Cancelado</option>
+                        </select>
+                        <select id="pedidos-filter-payment" onchange="filterPedidos()">
+                            <option value="">Todos os pagamentos</option>
+                            <option value="stripe">Stripe</option>
+                            <option value="manual">Manual</option>
+                        </select>
+                        <input type="text" id="pedidos-search" placeholder="Buscar por ID ou email..." oninput="filterPedidos()">
+                    </div>
+                    <div id="pedidos-list" class="pedidos-grid"></div>
                 </div>
 
             <!-- Tab Banners -->

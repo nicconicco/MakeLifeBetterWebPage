@@ -49,6 +49,12 @@ import {
     loadBanners,
     addBanners
 } from './admin-banners.js';
+import {
+    loadPedidos,
+    filterPedidos,
+    toggleOrderDetail,
+    changeOrderStatus
+} from './admin-pedidos.js';
 import { logInfo } from '../../utils/logger.js';
 
 /**
@@ -68,6 +74,9 @@ function loadCurrentTabData(tabName) {
             break;
         case 'produtos':
             loadProdutos();
+            break;
+        case 'pedidos':
+            loadPedidos();
             break;
         case 'banners':
             loadBanners();
@@ -185,6 +194,11 @@ function exposeGlobalFunctions() {
     window.deletarTodosProdutos = deletarTodosProdutos;
     window.downloadProdutosExcelTemplate = downloadProdutosExcelTemplate;
     window.importProdutosExcel = importProdutosExcel;
+
+    // Pedidos
+    window.filterPedidos = filterPedidos;
+    window.toggleOrderDetail = toggleOrderDetail;
+    window.changeOrderStatus = changeOrderStatus;
 
     // Banners
     window.addBanners = addBanners;
